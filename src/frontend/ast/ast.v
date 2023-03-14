@@ -11,7 +11,7 @@ pub enum NodeKind {
 	string_expr
 	ident_expr
 }
-[required]
+
 pub interface ASTNode {
 	kind NodeKind
 }

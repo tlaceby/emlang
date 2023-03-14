@@ -9,5 +9,5 @@ pub struct SourceFile {
 }
 
 pub interface Parser {
-	build_ast (file &SourceFile) ast.BlockStmt
+	mut: build_ast (file SourceFile) ast.BlockStmt
 }
