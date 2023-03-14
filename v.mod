@@ -1,7 +1,7 @@
 Module {
 	name: 'emlang'
-	description: ''
-	version: ''
-	license: ''
+	description: 'The em programming language.'
+	version: '0.0.1'
+	license: 'MIT'
 	dependencies: []
 }
