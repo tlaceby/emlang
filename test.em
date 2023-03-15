@@ -1,1 +1,1 @@
-(+ 45 foobar)
+(println (+ 32 10)

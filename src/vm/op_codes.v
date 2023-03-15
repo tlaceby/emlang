@@ -13,6 +13,9 @@ pub enum Opcode {
 	set_global
 	set_local
 
+	call
+	ret
+
 	add
 	sub
 	mul
