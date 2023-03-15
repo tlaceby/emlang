@@ -6,6 +6,8 @@ pub enum ValueKind {
 	bool
 	null
 }
+
+
 pub interface EmValue {
 	kind ValueKind
 	is_truthy () bool
