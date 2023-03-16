@@ -5,7 +5,7 @@ pub struct NumberExpr {
 	value f64
 }
 
-pub struct IdentLExpr {
+pub struct IdentExpr {
 	kind NodeKind = .ident_expr
 	value string
 }
