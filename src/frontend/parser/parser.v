@@ -17,6 +17,11 @@ pub fn (mut parser Parser) produce_ast (file SourceFile) ast.BlockStmt {
 
 	parser.tokens = lex.tokenize()
 
+	for tk in parser.tokens {
+		println(tk)
+	}
+
+
 	mut body := []Stmt{}
 
 	for {
