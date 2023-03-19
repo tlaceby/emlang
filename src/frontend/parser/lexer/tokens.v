@@ -108,6 +108,18 @@ pub struct Token {
 	position TokenLocation  [required]
 }
 
+pub fn (tk Token) kind () TokenKind {
+	return tk.kind
+}
+
+pub fn (tk Token) val () string {
+	return tk.value
+}
+
+pub fn (tk Token) loc () TokenLocation {
+	return tk.position
+}
+
 fn mk_token (kind TokenKind, value string, position TokenLocation) Token {
 	return Token{
 		kind

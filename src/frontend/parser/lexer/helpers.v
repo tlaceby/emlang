@@ -66,7 +66,7 @@ fn (mut lexer Lexer) build_identifier () {
 fn (mut lexer Lexer) build_numeric () {
 	start_pos := lexer.location()
 	mut decimal := 0 // count of found decimals
-	mut num_str := ""
+	mut num_str := lexer.next()
 
 	for lexer.not_eof() && (lexer.is_numeric() || lexer.at() == '.'){
 		// Handle decimal points
@@ -74,6 +74,7 @@ fn (mut lexer Lexer) build_numeric () {
 			decimal += 1
 		}
 
+		
 		num_str += lexer.next()
 
 	}
