@@ -3,6 +3,7 @@ module main
 import frontend.parser.lexer { SourceFile }
 import frontend.compiler
 import vm
+
 fn main() {
 	println("\n")
 	file := SourceFile{ name: "test.em", path: "./" }

@@ -38,9 +38,12 @@ fn init () {
 	literal(.string)
 
 	// Binary Expressions
-	infix(.plus, .sum, sum)
-	infix(.minus, .sum, sum)
+	infix(.plus, .sum, binary)
+	infix(.minus, .sum, binary)
+	infix(.star, .product, binary)
+	infix(.slash, .product, binary)
 
+	prefix(.open_paren, .call, grouping)
 }
 
 fn symbol (id TokenKind, bp Precedence) {
@@ -48,9 +51,10 @@ fn symbol (id TokenKind, bp Precedence) {
 }
 
 fn literal (id TokenKind) {
-	symbol(id, .primary)
+	symbol(id, .default)
 	nud_lookup[id] = primary
 }
+
 
 fn infix (id TokenKind, bp Precedence, led LED_FN) {
 	if !(id in led_lookup) {

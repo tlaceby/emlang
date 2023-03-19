@@ -120,7 +120,7 @@ pub fn (tk Token) loc () TokenLocation {
 	return tk.position
 }
 
-fn mk_token (kind TokenKind, value string, position TokenLocation) Token {
+pub fn mk_token (kind TokenKind, value string, position TokenLocation) Token {
 	return Token{
 		kind
 		value

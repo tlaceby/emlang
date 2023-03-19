@@ -2,8 +2,8 @@ module parser
 
 import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr }
 
-fn sum (mut parser &Parser, left Expr, bp int) Expr {
-	operator := parser.advance().val()
+fn binary (mut parser &Parser, left Expr, bp int) Expr {
+	operator := parser.prev().val()
 	right := parser.expression(bp)
 
 	return BinaryExpr{
@@ -13,9 +13,14 @@ fn sum (mut parser &Parser, left Expr, bp int) Expr {
 	}
 }
 
-fn primary ( mut parser &Parser) Expr {
-	tk := parser.advance()
+fn grouping (mut parser &Parser) Expr {
+	expr := parser.expression(0)
+	parser.expect(.close_paren)
+	return expr
+}
 
+fn primary (mut parser &Parser) Expr {
+	tk := parser.prev()
 	match tk.kind() {
 		.symbol { return IdentExpr{ value: tk.val() } }
 		.string { return StringExpr{ value: tk.val() } }
