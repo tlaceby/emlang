@@ -24,6 +24,7 @@ fn (mut lexer Lexer) next () string {
 }
 
 fn (mut lexer Lexer) new_line () {
+	lexer.line += 1
 	lexer.position += 1
 	lexer.offset = 0
 }
@@ -74,7 +75,7 @@ fn (mut lexer Lexer) build_numeric () {
 			decimal += 1
 		}
 
-		
+
 		num_str += lexer.next()
 
 	}
