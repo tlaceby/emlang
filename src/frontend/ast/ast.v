@@ -2,7 +2,7 @@ module ast
 pub enum NodeKind {
 	// Statements
 	block_stmt
-
+	var_declaration
 	// Complex Expressions
 	binary_expr
 
@@ -12,15 +12,7 @@ pub enum NodeKind {
 	ident_expr
 }
 
-pub interface ASTNode {
-	kind NodeKind
-}
+pub type Expr = NumberExpr | StringExpr | IdentExpr | BinaryExpr
+pub type Stmt = Expr | BlockStmt | VarDeclarationStmt
 
-
-pub interface Stmt 	{
-	ASTNode
-}
-
-pub interface Expr {
-	Stmt
-}
+pub type Node = Stmt | Expr

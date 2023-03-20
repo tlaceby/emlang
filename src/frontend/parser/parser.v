@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr }
+import frontend.ast { Expr, Stmt }
 import frontend.parser.lexer { build_lexer, SourceFile , Token, TokenKind, mk_token }
 
 pub struct Parser {
@@ -12,7 +12,7 @@ mut:
 	position int
 }
 
-pub fn (mut parser Parser) produce_ast (file SourceFile) Expr {
+pub fn (mut parser Parser) produce_ast (file SourceFile) Stmt {
 	parser.file = file
 	mut lex := build_lexer(file) or {
 		println(err)
@@ -20,10 +20,9 @@ pub fn (mut parser Parser) produce_ast (file SourceFile) Expr {
 	}
 
 	parser.tokens = lex.tokenize()
-
-	node := parser.expression(0)
-	return node
+	return parser.statement()
 }
+
 
 pub fn (mut parser Parser) expression (rbp int) Expr {
 	mut tk := parser.advance()

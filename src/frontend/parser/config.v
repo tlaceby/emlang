@@ -1,10 +1,12 @@
 module parser
 
-import frontend.ast { Expr, BinaryExpr, NumberExpr, Stmt }
+import frontend.ast { Expr, Stmt }
 import frontend.parser.lexer { Token, TokenKind,  }
 
 type LED_FN = fn(mut parser &Parser, left Expr, bp int) Expr
 type NUD_FN = fn (mut parser &Parser) Expr
+
+type STMT_FN = fn (mut parser &Parser) Stmt
 
 enum Precedence {
 	default = int(0)
@@ -22,6 +24,7 @@ enum Precedence {
 __global (
 	bp_lookup map[TokenKind]Precedence
 	led_lookup map[TokenKind]LED_FN
+	stmt_lookup map[TokenKind]STMT_FN
 	nud_lookup map[TokenKind]NUD_FN
 )
 
@@ -30,6 +33,7 @@ __global (
 fn init () {
 	mut bp_lookup := map[TokenKind]Precedence{}
 	mut led_lookup := map[TokenKind]LED_FN{}
+	mut stmt_lookup := map[TokenKind]STMT_FN{}
 	mut nud_lookup := map[TokenKind]NUD_FN{}
 
 	// Primary Expressions
@@ -44,6 +48,18 @@ fn init () {
 	infix(.slash, .product, binary)
 
 	prefix(.open_paren, .call, grouping)
+
+	stmt(.open_bracket, block)
+	stmt(.global, variable_declaration)
+	stmt(.local, variable_declaration)
+
+	$if debug {
+		println(bp_lookup)
+		println(led_lookup)
+		println(stmt_lookup)
+		println(nud_lookup)
+	}
+
 }
 
 fn symbol (id TokenKind, bp Precedence) {

@@ -15,7 +15,7 @@ fn (mut parser Parser) validate_nud () {
 	tk := parser.previous
 	if !(tk.kind() in nud_lookup) {
 		hint := "Consider using a different token?"
-		err := mk_error("Token provided does not contain a valid nud function${parser.prev()}", hint, .unexpected_token)
+		err := mk_error("Token provided does not contain a valid nud function\n${parser.prev()}", hint, .unexpected_token)
 		parser.error(err)
 		exit(1)
 	}
@@ -82,8 +82,8 @@ struct ErrorMessage {
 	hint string
 }
 
-fn mk_basic_err (message string) ErrorMessage {
-	return ErrorMessage{ message: message }
+fn mk_basic_err (kind ParserError, message string) ErrorMessage {
+	return ErrorMessage{ message: message, kind: kind }
 }
 
 fn mk_error (message string, hint string ,kind ParserError) ErrorMessage {

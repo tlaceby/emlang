@@ -12,7 +12,7 @@ mut:
 
 pub fn (mut c EMCompiler) emit_bytecode (entry SourceFile) CodeVal {
 	ast := c.parser.produce_ast(entry)
-	println(ast)
 
+	println(ast)
 	return c.code
 }

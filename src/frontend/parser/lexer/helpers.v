@@ -56,12 +56,37 @@ fn (mut lexer Lexer) build_identifier () {
 		ident += lexer.next()
 	}
 
+	mut reserved_keywords := map[string]TokenKind{}
+
+	reserved_keywords["global"] = .global
+	reserved_keywords["local"] = .local
+	reserved_keywords["fn"] = .@fn
+	reserved_keywords["continue"] = .@continue
+	reserved_keywords["break"] = .@break
+	reserved_keywords["return"] = .@return
+
+	reserved_keywords["module"] = .@module
+	reserved_keywords["import"] = .@import
+	reserved_keywords["pub"] = .@pub
+
+	reserved_keywords["if"] = .@if
+	reserved_keywords["else"] = .@else
+	reserved_keywords["match"] = .@match
+	reserved_keywords["while"] = .while
+	reserved_keywords["for"] = .@for
+
+	reserved_keywords["typeof"] = .@typeof
+	reserved_keywords["in"] = .@in
+	reserved_keywords["or"] = .@or
+	reserved_keywords["and"] = .and
+	reserved_keywords["not"] = .not
 
 	if ident in reserved_keywords {
 		lexer.tokens << mk_token(reserved_keywords[ident], ident, start)
 	} else {
 		lexer.tokens << mk_token(.symbol, ident, start)
 	}
+
 }
 
 fn (mut lexer Lexer) build_numeric () {
