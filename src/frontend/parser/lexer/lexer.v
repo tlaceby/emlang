@@ -29,7 +29,7 @@ pub fn build_lexer (file SourceFile) !Lexer {
 
 	return Lexer{
 		file: file,
-		source: source
+		source: "{" + source + " } "
 	}
 }
 

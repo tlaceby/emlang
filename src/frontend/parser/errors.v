@@ -27,7 +27,7 @@ fn (mut parser Parser) err_header (err ParserError) {
 	path := parser.file.path
 
 	print(bright_red(bold("CompilationError")))
-	println("::${bold(err.str())} in ${path}${filename}[${loc.line}:${loc.offset}]")
+	println("::${bold(err.str())} in ${path}${filename}[${loc.line + 1}:${loc.offset}]")
 }
 
 enum ErrorLineLoc {

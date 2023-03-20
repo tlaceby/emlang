@@ -1,6 +1,7 @@
 module parser
 
 import frontend.parser.lexer { Token, TokenKind }
+import term
 
 fn (mut parser Parser) advance () Token {
 	// TODO: Handle bounds checks
@@ -15,7 +16,9 @@ fn (mut parser Parser) expect (expected TokenKind) Token {
 		return parser.advance()
 	}
 
-	println("Unexpected token found: ${parser.current()}. Expected type: ${expected}")
+	exp := term.bright_cyan("Token.${expected.str()}")
+	instead := term.red("Token.${parser.current().kind().str()}")
+	parser.error(mk_basic_err(.unexpected_token, "Unexpected token found! Expected to find ${exp} but instead found ${instead}"))
 	exit(1)
 }
 

@@ -5,7 +5,6 @@ import frontend.compiler
 import vm
 
 fn main() {
-	println("\n")
 	file := SourceFile{ name: "test.em", path: "./" }
 	mut emitter := compiler.EMCompiler{}
 	bytecode := emitter.emit_bytecode(file)
