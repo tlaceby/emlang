@@ -7,6 +7,7 @@ import os
 enum ParserError {
 	unexpected_eof
 	unexpected_token
+	bad_lvalue
 }
 
 fn (mut parser Parser) validate_nud () {

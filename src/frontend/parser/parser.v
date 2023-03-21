@@ -12,6 +12,13 @@ mut:
 	position int
 }
 
+fn (mut parser Parser) is_lvalue (expr Expr) bool {
+	match expr.kind {
+		.ident_expr, .call_expr { return true }
+		else { return false }
+	}
+}
+
 pub fn (mut parser Parser) produce_ast (file SourceFile) Stmt {
 	parser.file = file
 	mut lex := build_lexer(file) or {

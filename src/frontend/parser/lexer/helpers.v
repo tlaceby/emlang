@@ -118,7 +118,7 @@ fn (mut lexer Lexer) build_string () {
 	opening_delim := lexer.next()
 	mut contents := ""
 	for lexer.not_eof() && lexer.at() != opening_delim  {
-		contents = lexer.next()
+		contents += lexer.next()
 	}
 
 	// check that we reached delim not eof

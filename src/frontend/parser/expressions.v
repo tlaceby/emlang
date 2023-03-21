@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr }
+import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr }
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
 	operator := parser.prev().kind()
@@ -17,6 +17,33 @@ fn grouping (mut parser &Parser) Expr {
 	expr := parser.expression(0)
 	parser.expect_hint(.close_paren, "Parenthesised expression did not have closing_paren. Mismatched for opening_paren")
 	return expr
+}
+
+fn fun_call (mut parser &Parser, left Expr, bp int) Expr {
+	// Make sure left hand side is either a string or member expression
+	if !parser.is_lvalue(left) {
+		err := mk_error("Attempted to use invalid lvalue in function call.", "Function caller must be lvalue: lvalue(...args)", .bad_lvalue)
+		parser.error(err)
+		exit(1)
+	}
+
+	// parse comma separated list
+	mut args := []Expr{}
+
+	for parser.not_eof() && parser.current().kind() != .close_paren {
+		args << parser.expression(0)
+
+		if parser.current().kind() != .close_paren {
+			parser.expect_hint(.comma, "Expected comma separated list inside call expression. Make sure each argument is separated with a single comma")
+		}
+	}
+
+	parser.expect_hint(.close_paren, "Function call missing closing parenthesis")
+
+	return CallExpr{
+		caller: left,
+		args: args
+	}
 }
 
 fn unary (mut parser &Parser) Expr {

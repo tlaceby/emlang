@@ -69,6 +69,8 @@ fn init () {
 	prefix(.not, .prefix, unary)
 	prefix(.open_paren, .call, grouping)
 
+	infix(.open_paren, .call, fun_call)
+
 	// Statements
 	stmt(.open_bracket, block)
 	stmt(.global, variable_declaration)

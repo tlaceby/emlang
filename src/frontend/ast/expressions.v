@@ -17,3 +17,10 @@ pub struct UnaryExpr {
 	operator lexer.TokenKind
 	right Expr
 }
+
+pub struct CallExpr {
+pub:
+	kind NodeKind = .call_expr
+	caller Expr
+	args []Expr
+}
