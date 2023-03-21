@@ -29,7 +29,7 @@ pub fn build_lexer (file SourceFile) !Lexer {
 
 	return Lexer{
 		file: file,
-		source: "{" + source + " } "
+		source: source
 	}
 }
 
@@ -37,10 +37,9 @@ pub fn (mut lexer Lexer) tokenize () []Token {
 	for lexer.not_eof() {
 		match lexer.at() {
 			'\n' { lexer.new_line() }
-			' ', '\s', '\t' { lexer.next() }
+			' ' { lexer.next() }
 			'\"', '\'', '`' { lexer.build_string() }
 			'(' { lexer.mk_single_tk(.open_paren) }
-			'=' { lexer.mk_single_tk(.equals) }
 			')' { lexer.mk_single_tk(.close_paren) }
 			'[' { lexer.mk_single_tk(.open_brace) }
 			']' { lexer.mk_single_tk(.close_brace) }
@@ -86,6 +85,35 @@ pub fn (mut lexer Lexer) tokenize () []Token {
 					lexer.mk_single_tk(.slash)
 				}
 			}
+			// Logical & Conditionals
+			'=' {
+				if lexer.peak() == '=' {
+					lexer.mk_literal_token(.is_equals, "==")
+				} else {
+					lexer.mk_single_tk(.equals)
+				}
+			}
+			'!' {
+				if lexer.peak() == '=' {
+					lexer.mk_literal_token(.not_equals, "!=")
+				} else {
+					lexer.mk_single_tk(.not)
+				}
+			}
+			'<' {
+				if lexer.peak() == '=' {
+					lexer.mk_literal_token(.less_eq, "<=")
+				} else {
+					lexer.mk_single_tk(.less)
+				}
+			}
+			'>' {
+				if lexer.peak() == '=' {
+					lexer.mk_literal_token(.greater_eq, ">=")
+				} else {
+					lexer.mk_single_tk(.greater)
+				}
+			}
 			else {
 				if lexer.is_numeric() {
 					lexer.build_numeric()
@@ -100,5 +128,6 @@ pub fn (mut lexer Lexer) tokenize () []Token {
 		}
 	}
 
+	lexer.tokens << mk_token(.eof, "END_OF_FILE", TokenLocation{})
 	return lexer.tokens
 }

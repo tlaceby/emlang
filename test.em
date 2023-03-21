@@ -1,3 +1,2 @@
-# tests
-global foo = println(45.32);
-globals nums = [10, 20, 30, 40];
+local foo = 45;
+local bar = 45.2;

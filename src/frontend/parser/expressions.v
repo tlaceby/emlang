@@ -3,7 +3,7 @@ module parser
 import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr }
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
-	operator := parser.prev().val()
+	operator := parser.prev().kind()
 	right := parser.expression(bp)
 
 	return BinaryExpr{
@@ -15,8 +15,14 @@ fn binary (mut parser &Parser, left Expr, bp int) Expr {
 
 fn grouping (mut parser &Parser) Expr {
 	expr := parser.expression(0)
-	parser.expect(.close_paren)
+	parser.expect_hint(.close_paren, "Parenthesised expression did not have closing_paren. Mismatched for opening_paren")
 	return expr
+}
+
+fn unary (mut parser &Parser) Expr {
+	operator := parser.previous.kind()
+	right := parser.expression(int(Precedence.prefix))
+	return ast.UnaryExpr{operator: operator, right: right}
 }
 
 fn primary (mut parser &Parser) Expr {
@@ -26,7 +32,8 @@ fn primary (mut parser &Parser) Expr {
 		.string { return StringExpr{ value: tk.val() } }
 		.number { return NumberExpr{ value: tk.val().f64() } }
 		else {
-			println("Unknown token found")
+			err := mk_basic_err(.unexpected_token, "Unexpected primary expression. Was expecting a valid literal expression.")
+			parser.error(err)
 			exit(1)
 		}
 	}

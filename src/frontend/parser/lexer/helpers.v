@@ -102,7 +102,6 @@ fn (mut lexer Lexer) build_numeric () {
 
 
 		num_str += lexer.next()
-
 	}
 
 	// check for more than one decimal

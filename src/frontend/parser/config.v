@@ -12,6 +12,7 @@ enum Precedence {
 	default = int(0)
 	assignment = 1
 	conditional
+	logical
 	sum
 	product
 	exponent
@@ -41,14 +42,34 @@ fn init () {
 	literal(.number)
 	literal(.string)
 
-	// Binary Expressions
+	// Logical
+	infix(.is_equals, .logical, binary)
+	infix(.not_equals, .logical, binary)
+	infix(.less, .logical, binary)
+	infix(.less_eq, .logical, binary)
+	infix(.greater, .logical, binary)
+	infix(.greater_eq, .logical, binary)
+
+	// Conditional
+	infix(.and, .conditional, binary)
+	infix(.@or, .conditional, binary)
+
+	// Sum
 	infix(.plus, .sum, binary)
 	infix(.minus, .sum, binary)
+
+	// Product
 	infix(.star, .product, binary)
 	infix(.slash, .product, binary)
+	infix(.percent, .product, binary)
 
+	// Unary
+	prefix(.plus, .prefix, unary)
+	prefix(.minus, .prefix, unary)
+	prefix(.not, .prefix, unary)
 	prefix(.open_paren, .call, grouping)
 
+	// Statements
 	stmt(.open_bracket, block)
 	stmt(.global, variable_declaration)
 	stmt(.local, variable_declaration)

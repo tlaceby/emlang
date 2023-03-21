@@ -13,6 +13,9 @@ pub enum TokenKind {
 	open_brace
 	close_brace
 
+	is_equals
+	not_equals
+	not
 	less
 	less_eq
 	greater
@@ -57,10 +60,9 @@ pub enum TokenKind {
 	@for
 
 	@typeof
-	@in
-	@or
-	and
-	not
+	@in // in
+	@or // ||
+	and // &&
 }
 
 pub struct TokenLocation  {

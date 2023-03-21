@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr, Stmt }
+import frontend.ast { Expr, Stmt, BlockStmt }
 import frontend.parser.lexer { build_lexer, SourceFile , Token, TokenKind, mk_token }
 
 pub struct Parser {
@@ -20,7 +20,14 @@ pub fn (mut parser Parser) produce_ast (file SourceFile) Stmt {
 	}
 
 	parser.tokens = lex.tokenize()
-	return parser.statement()
+
+	mut block := []Stmt{}
+
+	for parser.not_eof() {
+		block << parser.statement()
+	}
+
+	return BlockStmt{ body: block }
 }
 
 
