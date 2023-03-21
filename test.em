@@ -1,4 +1,3 @@
-# This is a super sweet comment
-local res = 10 * 2;
-global x;
-global platform = 4;
+# tests
+global foo = println(45.32);
+globals nums = [10, 20, 30, 40];

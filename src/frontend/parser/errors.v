@@ -3,7 +3,6 @@ module parser
 
 import term	{ bright_red, bright_yellow, cyan, bold }
 import os
-import frontend.parser.lexer { Token }
 
 enum ParserError {
 	unexpected_eof
@@ -14,8 +13,8 @@ fn (mut parser Parser) validate_nud () {
 	// Make sure there exists a nud
 	tk := parser.previous
 	if !(tk.kind() in nud_lookup) {
-		hint := "Consider using a different token?"
-		err := mk_error("Token provided does not contain a valid nud function\n${parser.prev()}", hint, .unexpected_token)
+		hint := "This syntax is unsupported in ${term.bold("em")}"
+		err := mk_error("Token provided does not contain a valid nud function\n${term.dim(parser.prev().str())}", hint, .unexpected_token)
 		parser.error(err)
 		exit(1)
 	}
@@ -59,6 +58,7 @@ fn (mut parser Parser) generate_err_line (loc ErrorLineLoc) string {
 		ln -= 1
 	} else if loc == .below { ln += 1 }
 
+
 	line = "${bold((ln + 1).str() + " |")}${repeat_char_str(" ", 2)}"
 
 
@@ -67,7 +67,17 @@ fn (mut parser Parser) generate_err_line (loc ErrorLineLoc) string {
 	}
 
 	if loc == .error_line {
+		mut below_line := "\n" + repeat_char_str(" ", 5)
 		line += lines[ln]
+
+		// add red line underneath error location
+		err_offset := parser.previous.loc().offset
+		err_tk_len := parser.previous.val().len
+
+		below_line += repeat_char_str(" ", err_offset)
+		below_line += term.bright_red(repeat_char_str("▔", err_tk_len))
+
+		line += below_line
 	} else {
 		line += term.gray(lines[ln])
 	}
@@ -97,19 +107,16 @@ fn (mut parser Parser) error (err ErrorMessage) {
 	below := parser.generate_err_line(.below)
 
 	println(top)
-	print(line)
-
-	if err.hint.len > 0 {
-		println("  ${term.gray("  <-- ")}${cyan(err.hint)}")
-	} else {
-		// add the needed new line to the print
-		print("\n")
-	}
+	println(line)
 
 	println(below)
 
-	print("\n")
-	print(bright_yellow("error_message: "))
+	// Print error hint if
+	if err.hint.len > 0 {
+		println("\n${term.bright_yellow(err.hint)}")
+	} else {
+		print("\n")
+	}
 	println("${err.message}")
 }
 
@@ -118,8 +125,8 @@ fn (mut parser Parser) validate_led () {
 	tk := parser.previous
 
 	if !(tk.kind() in led_lookup){
-		hint := "Consider using a different token?"
-		err := mk_error("Token provided does not contain a valid led function\n${parser.prev()}", hint, .unexpected_token)
+		hint := "This syntax is unsupported in ${term.bold("em")}"
+		err := mk_error("Token provided does not contain a valid led function\n${term.dim(parser.prev().str())}", hint, .unexpected_token)
 		parser.error(err)
 		exit(1)
 	}
