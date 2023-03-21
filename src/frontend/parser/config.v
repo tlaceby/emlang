@@ -11,8 +11,8 @@ type STMT_FN = fn (mut parser &Parser) Stmt
 enum Precedence {
 	default = int(0)
 	assignment = 1
-	conditional
 	logical
+	comparison
 	sum
 	product
 	exponent
@@ -43,16 +43,16 @@ fn init () {
 	literal(.string)
 
 	// Logical
-	infix(.is_equals, .logical, binary)
-	infix(.not_equals, .logical, binary)
-	infix(.less, .logical, binary)
-	infix(.less_eq, .logical, binary)
-	infix(.greater, .logical, binary)
-	infix(.greater_eq, .logical, binary)
+	infix(.is_equals, .comparison, binary)
+	infix(.not_equals, .comparison, binary)
+	infix(.less, .comparison, binary)
+	infix(.less_eq, .comparison, binary)
+	infix(.greater, .comparison, binary)
+	infix(.greater_eq, .comparison, binary)
 
 	// Conditional
-	infix(.and, .conditional, binary)
-	infix(.@or, .conditional, binary)
+	infix(.and, .logical, binary)
+	infix(.@or, .logical, binary)
 
 	// Sum
 	infix(.plus, .sum, binary)

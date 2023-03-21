@@ -6,6 +6,9 @@ pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
 
 	if tk.kind() in stmt_lookup {
+
+
+
 		return stmt_lookup[tk.kind()](mut parser)
 	}
 

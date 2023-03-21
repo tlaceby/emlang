@@ -2,25 +2,33 @@ module ast
 
 import frontend.parser.lexer
 
+
+// BinaryExpr represents a binary expression in the abstract syntax tree (AST),
+// containing two expressions combined with a binary operator, such as addition,
+// subtraction, or multiplication.
 pub struct BinaryExpr {
-pub:
-	kind NodeKind = .binary_expr
-	operator lexer.TokenKind
-	left Expr
-	right Expr
+	pub:
+	kind NodeKind = .binary_expr     // The node type of the binary expression
+	operator lexer.TokenKind         // The binary operator token kind
+	left Expr                        // The left-hand side expression
+	right Expr                       // The right-hand side expression
 }
 
-
+// UnaryExpr represents a unary expression in the abstract syntax tree (AST),
+// containing a single expression and a unary operator, such as negation or
+// logical NOT.
 pub struct UnaryExpr {
 	pub:
-	kind NodeKind = .unary_expr
-	operator lexer.TokenKind
-	right Expr
+	kind NodeKind = .unary_expr      // The node type of the unary expression
+	operator lexer.TokenKind         // The unary operator token kind
+	right Expr                       // The operand expression
 }
 
+// CallExpr represents a function call expression in the abstract syntax tree
+// (AST), containing a function identifier and a list of argument expressions.
 pub struct CallExpr {
-pub:
-	kind NodeKind = .call_expr
-	caller Expr
-	args []Expr
+	pub:
+	kind NodeKind = .call_expr       // The node type of the call expression
+	caller Expr                      // The function identifier expression
+	args []Expr                      // The list of argument expressions
 }
