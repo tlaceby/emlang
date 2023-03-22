@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Stmt, BlockStmt, VarDeclarationStmt, IdentExpr  }
+import frontend.ast { Stmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt }
 import frontend.parser.lexer { TokenKind }
 pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
@@ -36,6 +36,73 @@ fn stmt (id TokenKind, s_fn STMT_FN) {
 
 fn block (mut parser &Parser) Stmt {
 	return parser.block()
+}
+
+fn for_stmt (mut parser &Parser ) Stmt {
+	parser.advance()
+	mut index_var_name := ""
+	value_var_name := parser.expect_hint(.symbol, "Must provide the scoped variable name for the value").val()
+
+	// Handle optional index var name
+	if parser.current().kind() == .comma {
+		parser.advance()
+		index_var_name = parser.expect_hint(.symbol, "Expected variable identifier following comma in second position of for loop").val()
+	}
+
+	parser.expect_hint(.@in, "Following var & index identifiers expect in keyword inside for loop")
+	iterable := parser.expression(0) // must contain a array valur on rhs
+
+	disallowed_iterables := [NodeKind.binary_expr, NodeKind.number_expr, NodeKind.unary_expr, NodeKind.in_expr]
+	// ensure rhs is value that is iterable
+	if iterable.kind in disallowed_iterables {
+		err := mk_error("Value inside for loop conditional is not iterable", "Make sure value is iterable. Cannot use current value in loop", .bad_rvalue)
+		parser.error(err)
+		exit(1)
+	}
+
+	block := parser.block() as BlockStmt
+
+	return ForStmt{
+		value: value_var_name,
+		index: index_var_name,
+		iterable: iterable,
+		block: block
+	}
+}
+
+fn while_stmt (mut parser &Parser ) Stmt {
+	parser.advance()
+	condition := parser.expression(0)
+	block := parser.block() as BlockStmt
+
+	return WhileStmt {
+		condition: condition,
+		block: block
+	}
+}
+
+fn if_stmt (mut parser &Parser) Stmt {
+	parser.advance()
+	// parse out the condition
+	condition := parser.expression(0)
+	consequent := parser.block()
+
+	if parser.current().kind() == .@else {
+		parser.advance()
+		st := parser.statement()
+
+		return IfStmt{
+			test: condition,
+			consequent: consequent
+			alternate: st
+		}
+	}
+
+
+	return IfStmt{
+		test: condition,
+		consequent: consequent
+	}
 }
 
 fn variable_declaration (mut parser &Parser) Stmt {

@@ -83,6 +83,9 @@ fn init () {
 	stmt(.open_bracket, block)
 	stmt(.global, variable_declaration)
 	stmt(.local, variable_declaration)
+	stmt(.@if, if_stmt)
+	stmt(.@for, for_stmt)
+	stmt(.while, while_stmt)
 
 	$if debug {
 		println(bp_lookup)

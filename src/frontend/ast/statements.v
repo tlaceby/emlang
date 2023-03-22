@@ -18,3 +18,27 @@ pub struct VarDeclarationStmt {
 	ident string                                // The name of the variable being declared
 	rhs    Expr                                 // The right-hand side expression for the variable declaration
 }
+
+pub struct IfStmt {
+pub:
+	kind NodeKind = .if_stmt
+	test Expr
+	consequent Stmt
+	alternate ?Stmt
+}
+
+pub struct ForStmt {
+	pub:
+	kind NodeKind = .for_stmt
+	value string		// The name of the variable assigned through the loop
+	index string 		// optional index variable name
+	iterable Expr 		// the value being iterated over
+	block BlockStmt
+}
+
+pub struct WhileStmt {
+pub:
+	kind NodeKind = .while_stmt
+	condition Expr
+	block BlockStmt
+}

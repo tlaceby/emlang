@@ -6,6 +6,10 @@ module ast
 pub enum NodeKind {
 	// Statements
 	block_stmt
+	for_stmt
+	while_stmt
+	if_stmt
+
 	var_declaration
 	// Complex Expressions
 	binary_expr
@@ -30,7 +34,7 @@ pub type Expr = NumberExpr | StringExpr | IdentExpr | BinaryExpr |
 UnaryExpr | CallExpr | ArrayExpr | ObjectExpr | ObjectProp | InExpr | MemberExpr
 
 // Stmt is a union type that represents the different types of statements in the AST.
-pub type Stmt = Expr | BlockStmt | VarDeclarationStmt
+pub type Stmt = Expr | BlockStmt | VarDeclarationStmt | IfStmt | ForStmt | WhileStmt
 
 // Node is a union type that represents both statements and expressions in the AST.
 pub type Node = Stmt | Expr

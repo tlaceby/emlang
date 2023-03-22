@@ -14,9 +14,9 @@ fn binary (mut parser &Parser, left Expr, bp int) Expr {
 }
 
 fn in_expression (mut parser &Parser, left Expr, bp int) Expr {
-	allowed_lhs := [NodeKind.string_expr, .call_expr, .ident_expr, .number_expr, .array_literal, .object_literal, .member_expr ]
+	allowed_lhs := [NodeKind.string_expr, .call_expr, .ident_expr, .number_expr, .array_literal, .object_literal, .member_expr, .binary_expr]
 	if !(left.kind in allowed_lhs) {
-		msg := mk_basic_err(.bad_lvalue, "Invalid lvalue for in expression")
+		msg := mk_basic_err(.bad_lvalue, "Invalid lvalue for in expression: ${left.kind}")
 		parser.error(msg)
 		exit(1)
 	}

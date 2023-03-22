@@ -8,6 +8,7 @@ enum ParserError {
 	unexpected_eof
 	unexpected_token
 	bad_lvalue
+	bad_rvalue
 	bad_type_assertion
 }
 
