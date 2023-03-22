@@ -50,6 +50,8 @@ fn init () {
 	infix(.greater, .comparison, binary)
 	infix(.greater_eq, .comparison, binary)
 
+	infix(.@in, .logical, in_expression)
+
 	// Conditional
 	infix(.and, .logical, binary)
 	infix(.@or, .logical, binary)
@@ -70,10 +72,12 @@ fn init () {
 	prefix(.open_paren, .call, grouping)
 
 	infix(.open_paren, .call, fun_call)
+	infix(.open_brace, .call, member_expr)
+	infix(.dot, .call, member_expr)
 
 	// Complex Literals
 	prefix(.open_bracket, .prefix, object_literal)
-	prefix(.open_brace, .prefix, array_literal)
+	prefix(.open_brace, .call, array_literal)
 
 	// Statements
 	stmt(.open_bracket, block)

@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
+import frontend.ast { Expr, NodeKind, MemberExpr, InExpr ,BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
 	operator := parser.prev().kind()
@@ -10,6 +10,23 @@ fn binary (mut parser &Parser, left Expr, bp int) Expr {
 		operator: operator,
 		left: left,
 		right: right
+	}
+}
+
+fn in_expression (mut parser &Parser, left Expr, bp int) Expr {
+	// TODO: Add member expressions
+	allowed_lhs := [NodeKind.string_expr, .call_expr, .ident_expr, .number_expr, .array_literal, .object_literal]
+	if !(left.kind in allowed_lhs) {
+		msg := mk_basic_err(.bad_lvalue, "Invalid lvalue for in expression")
+		parser.error(msg)
+		exit(1)
+	}
+
+	rhs := parser.expression(bp)
+
+	return InExpr{
+		lhs: left,
+		rhs: rhs
 	}
 }
 
@@ -103,6 +120,21 @@ fn object_literal (mut parser &Parser) Expr {
 	// Does not actually run code
 	return ObjectExpr {
 		values: values
+	}
+}
+
+fn member_expr (mut parser &Parser, left Expr, bp int) Expr {
+	computed := parser.prev().kind() == .open_brace
+	right := parser.expression(bp)
+
+	if computed {
+		parser.expect_hint(.close_brace, "Expected closing brace for member expression that is computed ex: foo['bar']")
+	}
+
+	return MemberExpr {
+		computed: computed,
+		lhs: left
+		rhs: right
 	}
 }
 

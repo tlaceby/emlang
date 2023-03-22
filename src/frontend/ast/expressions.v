@@ -32,3 +32,18 @@ pub struct CallExpr {
 	caller Expr                      // The function identifier expression
 	args []Expr                      // The list of argument expressions
 }
+
+pub struct InExpr {
+	pub:
+	kind NodeKind = .in_expr       // The node type of the in expression
+	lhs Expr                       // Should be a literal or more complex expression
+	rhs Expr                       // Array, Fn call or identifier etc...
+}
+
+pub struct MemberExpr {
+pub:
+	kind NodeKind = .member_expr
+	lhs Expr
+	rhs Expr
+	computed bool
+}
