@@ -3,6 +3,7 @@ module compiler
 import frontend.parser.lexer { SourceFile }
 import frontend.parser { Parser }
 import vm.values { CodeVal }
+import time
 
 // EMCompiler is responsible for taking an abstract syntax tree (AST) and generating
 // bytecode for the given program.
@@ -14,8 +15,11 @@ pub struct EMCompiler {
 
 // emit_bytecode takes a source file and produces the bytecode for it.
 pub fn (mut c EMCompiler) emit_bytecode (entry SourceFile) CodeVal {
+	start := time.now()
 	ast := c.parser.produce_ast(entry)
-
 	println(ast)
+	end := time.now()
+
+	println("time: ${end - start}")
 	return c.code
 }
