@@ -1,10 +1,5 @@
 module ast
 
-pub struct TypeKind {
-	array_of bool
-	typename string   [required]
-}
-
 // Example []number = array_of: true, object_of: false, typename: number
 
 // NodeKind represents the different types of nodes in the abstract syntax tree (AST).

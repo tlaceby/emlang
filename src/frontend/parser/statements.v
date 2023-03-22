@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Stmt, BlockStmt, VarDeclarationStmt }
+import frontend.ast { Stmt, BlockStmt, VarDeclarationStmt, IdentExpr  }
 import frontend.parser.lexer { TokenKind }
 pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
@@ -50,7 +50,6 @@ fn variable_declaration (mut parser &Parser) Stmt {
 
 		return VarDeclarationStmt {
 			local: local,
-			assigned_type: none
 			ident: identifier,
 			rhs: rhs
 		}
@@ -65,7 +64,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 			local: local,
 			assigned_type: declared_type
 			ident: identifier,
-			rhs: none
+			rhs: IdentExpr { value: "null" }
 		}
 	}
 

@@ -1,7 +1,4 @@
-local location = {
-    x: 10.230,
-    y: -23
-};
+local numbers [][]number = [];
 
 # println(person["age"]);
 # println(person.age);

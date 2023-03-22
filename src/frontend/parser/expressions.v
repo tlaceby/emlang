@@ -56,6 +56,7 @@ fn array_literal (mut parser &Parser) Expr {
 	mut array_list := []Expr{}
 
 	for parser.not_eof() && parser.current().kind() != .close_brace {
+
 		array_list << parser.expression(0)
 
 		if parser.current().kind() == .close_brace {
@@ -68,6 +69,7 @@ fn array_literal (mut parser &Parser) Expr {
 		parser.expect_hint(.comma, "Comma required for array list literal")
 	}
 
+	parser.expect_hint(.close_brace, "Array literal missing closing brace")
 	// Does not actually run code
 	return ArrayExpr {
 		values: array_list
