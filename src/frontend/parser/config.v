@@ -1,7 +1,7 @@
 module parser
 
 import frontend.ast { Expr, Stmt }
-import frontend.parser.lexer { Token, TokenKind,  }
+import frontend.parser.lexer { TokenKind }
 
 type LED_FN = fn(mut parser &Parser, left Expr, bp int) Expr
 type NUD_FN = fn (mut parser &Parser) Expr
@@ -70,6 +70,10 @@ fn init () {
 	prefix(.open_paren, .call, grouping)
 
 	infix(.open_paren, .call, fun_call)
+
+	// Complex Literals
+	prefix(.open_bracket, .prefix, object_literal)
+	prefix(.open_brace, .prefix, array_literal)
 
 	// Statements
 	stmt(.open_bracket, block)

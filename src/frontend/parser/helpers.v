@@ -2,6 +2,7 @@ module parser
 
 import frontend.parser.lexer { Token, TokenKind }
 import term
+import frontend.ast { TypeKind }
 
 fn (mut parser Parser) advance () Token {
 	// TODO: Handle bounds checks
@@ -50,4 +51,28 @@ fn (mut parser Parser) current () Token {
 fn (mut parser Parser) prev () Token {
 	// TODO: Check bounds
 	return parser.previous
+}
+
+fn (mut parser Parser) type_at () TypeKind {
+	mut array_of := false
+	mut tk := parser.advance()
+
+	match tk.kind() {
+		.open_brace {
+			parser.expect_hint(.close_brace, "Type started with [ must have following ] included. ex: []number")
+			tk = parser.advance()
+			array_of = true
+		}
+		.symbol {}
+		else {
+			msg := mk_basic_err(.bad_type_assertion, "Unknown type specified in type assertion.")
+			parser.error(msg)
+			exit(1)
+		}
+	}
+
+	return TypeKind {
+		array_of: array_of,
+		typename: tk.val()
+	}
 }

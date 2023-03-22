@@ -1,5 +1,12 @@
 module ast
 
+pub struct TypeKind {
+	array_of bool
+	typename string   [required]
+}
+
+// Example []number = array_of: true, object_of: false, typename: number
+
 // NodeKind represents the different types of nodes in the abstract syntax tree (AST).
 pub enum NodeKind {
 	// Statements
@@ -10,6 +17,11 @@ pub enum NodeKind {
 	unary_expr
 	call_expr
 
+	// Complex Literals
+	array_literal
+	object_property
+	object_literal
+
 	// Primary Expression
 	number_expr
 	string_expr
@@ -18,7 +30,7 @@ pub enum NodeKind {
 
 // Expr is a union type that represents the different types of expressions in the AST.
 pub type Expr = NumberExpr | StringExpr | IdentExpr | BinaryExpr |
-UnaryExpr | CallExpr
+UnaryExpr | CallExpr | ArrayExpr | ObjectExpr | ObjectProp
 
 // Stmt is a union type that represents the different types of statements in the AST.
 pub type Stmt = Expr | BlockStmt | VarDeclarationStmt

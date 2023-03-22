@@ -14,7 +14,7 @@ mut:
 
 fn (mut parser Parser) is_lvalue (expr Expr) bool {
 	match expr.kind {
-		.ident_expr, .call_expr { return true }
+		.ident_expr, .call_expr, .object_literal { return true }
 		else { return false }
 	}
 }

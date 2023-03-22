@@ -14,6 +14,7 @@ pub struct VarDeclarationStmt {
 	pub:
 	kind NodeKind = .var_declaration // The node type of the variable declaration statement
 	local bool                       // Whether the variable is local or global
+	assigned_type ?TypeKind			 // Type the user declared variable to be
 	ident string                     // The name of the variable being declared
-	rhs   Expr                       // The right-hand side expression for the variable declaration
+	rhs   ?Expr                     // The right-hand side expression for the variable declaration
 }

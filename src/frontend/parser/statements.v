@@ -6,9 +6,6 @@ pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
 
 	if tk.kind() in stmt_lookup {
-
-
-
 		return stmt_lookup[tk.kind()](mut parser)
 	}
 
@@ -44,13 +41,44 @@ fn block (mut parser &Parser) Stmt {
 fn variable_declaration (mut parser &Parser) Stmt {
 	local := parser.advance().kind() == .local
 	identifier := parser.expect(.symbol).val()
+
+	// Parse type inferred declaration
+	if parser.current().kind() == .equals {
+		parser.expect(.equals)
+		rhs := parser.expression(0)
+		parser.expect(.semicolon)
+
+		return VarDeclarationStmt {
+			local: local,
+			assigned_type: none
+			ident: identifier,
+			rhs: rhs
+		}
+	}
+
+	declared_type := parser.type_at()
+
+	// accept the variable declaration and eat semicolon
+	if parser.current().kind() == .semicolon {
+		parser.expect(.semicolon)
+		return VarDeclarationStmt {
+			local: local,
+			assigned_type: declared_type
+			ident: identifier,
+			rhs: none
+		}
+	}
+
+	// Handle user given type as well as default value
 	parser.expect(.equals)
 	rhs := parser.expression(0)
 	parser.expect(.semicolon)
 
 	return VarDeclarationStmt {
 		local: local,
+		assigned_type: declared_type
 		ident: identifier,
 		rhs: rhs
 	}
+
 }

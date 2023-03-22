@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr }
+import frontend.ast { Expr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
 	operator := parser.prev().kind()
@@ -50,6 +50,58 @@ fn unary (mut parser &Parser) Expr {
 	operator := parser.previous.kind()
 	right := parser.expression(int(Precedence.prefix))
 	return ast.UnaryExpr{operator: operator, right: right}
+}
+
+fn array_literal (mut parser &Parser) Expr {
+	mut array_list := []Expr{}
+
+	for parser.not_eof() && parser.current().kind() != .close_brace {
+		array_list << parser.expression(0)
+
+		if parser.current().kind() == .close_brace {
+			parser.advance()
+			return ArrayExpr {
+				values: array_list
+			}
+		}
+
+		parser.expect_hint(.comma, "Comma required for array list literal")
+	}
+
+	// Does not actually run code
+	return ArrayExpr {
+		values: array_list
+	}
+}
+
+fn object_literal (mut parser &Parser) Expr {
+	mut values := []ObjectProp{}
+
+	for parser.not_eof() && parser.current().kind() != .close_bracket {
+		label := parser.expect_hint(.symbol, "Object literal should contain valid identifier as key").val()
+
+		parser.expect_hint(.colon, "Missing semicolon following label inside object literal")
+
+		val := parser.expression(int(Precedence.logical))
+		values << ObjectProp{
+			value: val,
+			label: label
+		}
+
+		if parser.current().kind() == .close_bracket {
+			parser.advance()
+			return ObjectExpr {
+				values: values
+			}
+		}
+
+		parser.expect_hint(.comma, "Comma seperated values required object literal")
+	}
+
+	// Does not actually run code
+	return ObjectExpr {
+		values: values
+	}
 }
 
 fn primary (mut parser &Parser) Expr {

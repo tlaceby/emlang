@@ -1,1 +1,7 @@
-println(12, 4 <= 2 and !foo);
+local location = {
+    x: 10.230,
+    y: -23
+};
+
+# println(person["age"]);
+# println(person.age);

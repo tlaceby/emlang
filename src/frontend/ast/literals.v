@@ -23,3 +23,23 @@ pub struct StringExpr {
 	kind NodeKind = .string_expr    // The node type of the string expression
 	value string                    // The string value of the expression
 }
+
+
+
+pub struct ArrayExpr {
+	pub:
+	kind NodeKind = .array_literal
+	values []Expr
+}
+
+pub struct ObjectProp {
+	pub:
+	kind NodeKind = .object_property
+	label string   [required]
+	value Expr     [required]
+}
+pub struct ObjectExpr {
+	pub:
+	kind NodeKind = .object_literal
+	values []ObjectProp
+}

@@ -2,7 +2,7 @@ module compiler
 
 import frontend.parser.lexer { SourceFile }
 import frontend.parser { Parser }
-import vm.values { EmValue, CodeVal }
+import vm.values { CodeVal }
 
 // EMCompiler is responsible for taking an abstract syntax tree (AST) and generating
 // bytecode for the given program.
