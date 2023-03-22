@@ -43,7 +43,7 @@ pub struct InExpr {
 pub struct MemberExpr {
 pub:
 	kind NodeKind = .member_expr
+	computed bool
 	lhs Expr
 	rhs Expr
-	computed bool
 }

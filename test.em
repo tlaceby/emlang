@@ -1,1 +1,1 @@
-local result = vec.x.y["z"]();
+foo.bar in [10, 20, 30];
