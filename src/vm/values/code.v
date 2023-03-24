@@ -1,7 +1,5 @@
 module values
 
-
-
 pub struct CodeVal {
 	kind ValueKind = .code
 pub mut:

@@ -42,6 +42,14 @@ fn init () {
 	literal(.number)
 	literal(.string)
 
+	// Assignments
+	infix(.equals, .assignment, assignment)
+	// Complex Assignment
+	infix(.plus_eq, .assignment, assignment)
+	infix(.minus_eq, .assignment, assignment)
+	infix(.star_eq, .assignment, assignment)
+	infix(.slash_eq, .assignment, assignment)
+
 	// Logical
 	infix(.is_equals, .comparison, binary)
 	infix(.not_equals, .comparison, binary)
@@ -81,8 +89,8 @@ fn init () {
 
 	// Statements
 	stmt(.open_bracket, block)
-	stmt(.global, variable_declaration)
-	stmt(.local, variable_declaration)
+	stmt(.@mut, variable_declaration)
+	stmt(.var, variable_declaration)
 	stmt(.@if, if_stmt)
 	stmt(.@for, for_stmt)
 	stmt(.while, while_stmt)

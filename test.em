@@ -1,11 +1,6 @@
-# For Index Loops
-for value, i in [1, 2, 3, 4 ,5] {
-    println(num);
-}
+mut baz []number;
+mut foo number = add(1, 20);
+var bar string = "Hello World";
 
-# TODO incriment and decrement operators
-local i = 0;
-while i < 10 {
-    println("{}".format(i));
-    i += 1;
-}
+baz += [10, 20, 30];
+

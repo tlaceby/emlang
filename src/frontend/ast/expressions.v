@@ -33,6 +33,14 @@ pub struct CallExpr {
 	args []Expr                      // The list of argument expressions
 }
 
+pub struct AssignmentExpr {
+pub:
+	kind NodeKind = .assignment_expr
+	operator lexer.TokenKind = .equals
+	lvalue Expr
+	rvalue Expr
+}
+
 pub struct InExpr {
 	pub:
 	kind NodeKind = .in_expr       // The node type of the in expression

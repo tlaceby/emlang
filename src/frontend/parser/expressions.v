@@ -1,6 +1,7 @@
 module parser
 
-import frontend.ast { Expr, NodeKind, MemberExpr, InExpr ,BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
+import frontend.ast { Expr, NodeKind, MemberExpr, AssignmentExpr , InExpr ,BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
+import term
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
 	operator := parser.prev().kind()
@@ -10,6 +11,25 @@ fn binary (mut parser &Parser, left Expr, bp int) Expr {
 		operator: operator,
 		left: left,
 		right: right
+	}
+}
+
+fn assignment (mut parser &Parser, lvalue Expr, bp int) Expr {
+	assignment_kind := parser.previous.kind()
+	// check valid l_value
+	valid_lvalues := [NodeKind.ident_expr, .member_expr]
+	if !(lvalue.kind in valid_lvalues) {
+		err := mk_error("Bad lvalue provided inside assignment expression. Received: ${term.bright_magenta(lvalue.kind.str())}", "lvalue must be an assignable type such as identifier or member expression", .bad_lvalue)
+		parser.error(err)
+		exit(1)
+	}
+
+	rvalue := parser.expression(bp)
+
+	return AssignmentExpr{
+		operator: assignment_kind
+		lvalue: lvalue,
+		rvalue: rvalue
 	}
 }
 

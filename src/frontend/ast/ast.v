@@ -12,6 +12,7 @@ pub enum NodeKind {
 
 	var_declaration
 	// Complex Expressions
+	assignment_expr
 	binary_expr
 	unary_expr
 	call_expr
@@ -30,7 +31,7 @@ pub enum NodeKind {
 }
 
 // Expr is a union type that represents the different types of expressions in the AST.
-pub type Expr = NumberExpr | StringExpr | IdentExpr | BinaryExpr |
+pub type Expr = NumberExpr | StringExpr | IdentExpr | BinaryExpr | AssignmentExpr |
 UnaryExpr | CallExpr | ArrayExpr | ObjectExpr | ObjectProp | InExpr | MemberExpr
 
 // Stmt is a union type that represents the different types of statements in the AST.

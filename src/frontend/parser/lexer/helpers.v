@@ -85,8 +85,8 @@ fn (mut lexer Lexer) build_identifier () {
 
 	mut reserved_keywords := map[string]TokenKind{}
 
-	reserved_keywords["global"] = .global
-	reserved_keywords["local"] = .local
+	reserved_keywords["mut"] = .@mut
+	reserved_keywords["var"] = .var
 	reserved_keywords["fn"] = .@fn
 	reserved_keywords["continue"] = .@continue
 	reserved_keywords["break"] = .@break

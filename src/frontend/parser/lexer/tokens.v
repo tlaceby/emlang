@@ -45,8 +45,8 @@ pub enum TokenKind {
 	minus_minus
 
 	// Reserved Keywords
-	global
-	local
+	@mut
+	var
 	@fn
 	@continue
 	@break

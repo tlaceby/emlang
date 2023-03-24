@@ -106,7 +106,7 @@ fn if_stmt (mut parser &Parser) Stmt {
 }
 
 fn variable_declaration (mut parser &Parser) Stmt {
-	local := parser.advance().kind() == .local
+	mutable := parser.advance().kind() == .@mut
 	identifier := parser.expect(.symbol).val()
 
 	// Parse type inferred declaration
@@ -116,7 +116,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 		parser.expect(.semicolon)
 
 		return VarDeclarationStmt {
-			local: local,
+			mutable: mutable,
 			ident: identifier,
 			rhs: rhs
 		}
@@ -128,7 +128,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 	if parser.current().kind() == .semicolon {
 		parser.expect(.semicolon)
 		return VarDeclarationStmt {
-			local: local,
+			mutable: mutable
 			assigned_type: declared_type
 			ident: identifier,
 			rhs: IdentExpr { value: "null" }
@@ -141,7 +141,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 	parser.expect(.semicolon)
 
 	return VarDeclarationStmt {
-		local: local,
+		mutable: mutable
 		assigned_type: declared_type
 		ident: identifier,
 		rhs: rhs
