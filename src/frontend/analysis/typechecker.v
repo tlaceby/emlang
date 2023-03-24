@@ -3,14 +3,7 @@ module analysis
 import frontend.ast { BlockStmt, Stmt, Expr }
 import term
 
-struct TypeInfo {
-	identifier string [required]
-	typename string   [required]
-	i_type Type
-}
-
 pub enum TypeKind {
-	null
 	@none
 	any
 	number
@@ -37,8 +30,7 @@ pub struct Primitive {
 
 pub struct TypeChecker {
 mut:
-	ident_types map[string]TypeInfo
-	types map[string]Type
+	env TypeEnv
 	errors []TypeError
 }
 
@@ -59,7 +51,7 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 	match node.kind {
 		// Statements
 		.block_stmt { return checker.block_stmt(node as BlockStmt) }
-		.var_declaration {}
+		.var_declaration { return checker.var_declaration(node as ast.VarDeclarationStmt) }
 		// Expressions
 		.assignment_expr {}
 		.fn_expr {}
@@ -84,8 +76,15 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 
 
 fn (mut checker TypeChecker) declare_global_types () {
-	checker.types['true'] = Primitive{kind: .boolean, name: "boolean" }
-	checker.types['false'] = Primitive{kind: .boolean, name: "boolean" }
-	checker.types['null'] = Primitive{kind: .null, name: "boolean" }
-	checker.types['any'] = Primitive{kind: .any, name: "boolean" }
+	// Define types
+	checker.env.define_type("boolean", Primitive{kind: .boolean, name: "boolean" })
+	checker.env.define_type("any", Primitive{kind: .any, name: "any" })
+	checker.env.define_type("none", Primitive{kind: .@none, name: "none" })
+
+	// Define literals to a type
+	checker.env.lookup["none"] = checker.env.types["none"]
+	checker.env.lookup["any"] = checker.env.types["any"]
+	checker.env.lookup["true"] = checker.env.types["boolean"]
+	checker.env.lookup["false"] = checker.env.types["boolean"]
+
 }

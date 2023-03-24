@@ -4,8 +4,10 @@ import term
 
 enum ErrorKind {
 	mismatching_types
+	variable_re_declaration
 	undefined_identifier
 	unknown_ast
+	invalid_operation
 }
 
 struct TypeError {
