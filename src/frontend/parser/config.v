@@ -83,6 +83,8 @@ fn init () {
 	infix(.open_brace, .call, member_expr)
 	infix(.dot, .call, member_expr)
 
+	prefix(.@fn, .call, fn_expression)
+
 	// Complex Literals
 	prefix(.open_bracket, .prefix, object_literal)
 	prefix(.open_brace, .call, array_literal)
@@ -91,9 +93,12 @@ fn init () {
 	stmt(.open_bracket, block)
 	stmt(.@mut, variable_declaration)
 	stmt(.var, variable_declaration)
+	stmt(.@fn, fn_declaration)
 	stmt(.@if, if_stmt)
 	stmt(.@for, for_stmt)
 	stmt(.while, while_stmt)
+
+	stmt(.@return, return_stmt)
 
 	$if debug {
 		println(bp_lookup)

@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Stmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt }
+import frontend.ast { Stmt, ReturnStmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt, FnDeclaration, FnParam }
 import frontend.parser.lexer { TokenKind }
 pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
@@ -102,6 +102,63 @@ fn if_stmt (mut parser &Parser) Stmt {
 	return IfStmt{
 		test: condition,
 		consequent: consequent
+	}
+}
+
+fn return_stmt (mut parser &Parser) Stmt {
+	parser.expect(.@return)
+	rhs := parser.expression(0)
+
+	parser.expect_hint(.semicolon, "Return statement missing semicolon")
+	return ReturnStmt {
+		rvalue: rhs
+	}
+}
+
+fn fn_declaration (mut parser &Parser) Stmt {
+	parser.advance()
+	name := parser.expect_hint(.symbol, "Expected function name following `fn` keyword").val()
+
+	parser.expect(.open_paren)
+	mut params_list := []FnParam{}
+
+	for parser.not_eof() && parser.current().kind() != .close_paren {
+		param_name := parser.expect(.symbol).val()
+
+		// Validate token is not a comma and a type
+		if parser.current().kind() == .comma {
+			err := mk_basic_err(.unexpected_token, "Missing parameter type inside function declaration. Expected type not comma")
+			parser.error(err)
+			exit(1)
+		}
+
+		declared_type := parser.type_at()
+
+		if parser.current().kind() != .close_paren {
+			parser.expect(.comma)
+		}
+
+		params_list << FnParam{
+			name: param_name,
+			param_type: declared_type
+		}
+	}
+
+	parser.expect(.close_paren)
+	mut return_type := "void"
+
+	// Check for block open. If it is not there then a return type was passed
+	if parser.current().kind() != .open_bracket {
+		return_type = parser.type_at()
+	}
+
+	body := parser.block() as BlockStmt
+
+	return FnDeclaration{
+		params: params_list,
+		returns: return_type,
+		body: body,
+		name: name
 	}
 }
 

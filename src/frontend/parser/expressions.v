@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr, NodeKind, MemberExpr, AssignmentExpr , InExpr ,BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp }
+import frontend.ast { Expr, NodeKind, MemberExpr, AssignmentExpr , FnExpr, FnParam, InExpr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp, BlockStmt }
 import term
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
@@ -46,6 +46,49 @@ fn in_expression (mut parser &Parser, left Expr, bp int) Expr {
 	return InExpr{
 		lhs: left,
 		rhs: rhs
+	}
+}
+
+fn fn_expression (mut parser &Parser) Expr {
+	parser.expect(.open_paren)
+	mut params_list := []FnParam{}
+
+	for parser.not_eof() && parser.current().kind() != .close_paren {
+		param_name := parser.expect(.symbol).val()
+
+		// Validate token is not a comma and a type
+		if parser.current().kind() == .comma {
+			err := mk_basic_err(.unexpected_token, "Missing parameter type inside lambda function expression.")
+			parser.error(err)
+			exit(1)
+		}
+
+		declared_type := parser.type_at()
+
+		if parser.current().kind() != .close_paren {
+			parser.expect(.comma)
+		}
+
+		params_list << FnParam{
+			name: param_name,
+			param_type: declared_type
+		}
+	}
+
+	parser.expect(.close_paren)
+	mut return_type := "void"
+
+	// Check for block open. If it is not there then a return type was passed
+	if parser.current().kind() != .open_bracket {
+		return_type = parser.type_at()
+	}
+
+	body := parser.block() as BlockStmt
+
+	return FnExpr {
+		params: params_list,
+		returns: return_type,
+		body: body,
 	}
 }
 

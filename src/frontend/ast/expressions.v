@@ -33,6 +33,14 @@ pub struct CallExpr {
 	args []Expr                      // The list of argument expressions
 }
 
+pub struct FnExpr {
+pub mut:
+	kind NodeKind = .fn_expr
+	returns string = "void"
+	params []FnParam
+	body BlockStmt
+}
+
 pub struct AssignmentExpr {
 pub:
 	kind NodeKind = .assignment_expr

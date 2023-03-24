@@ -19,6 +19,28 @@ pub struct VarDeclarationStmt {
 	rhs    Expr                                 // The right-hand side expression for the variable declaration
 }
 
+pub struct FnParam {
+pub mut:
+	kind NodeKind = .fn_param
+	name string
+	param_type string
+}
+
+pub struct ReturnStmt {
+pub mut:
+	kind NodeKind = .return_stmt
+	rvalue Expr
+}
+
+pub struct FnDeclaration {
+pub mut:
+	kind NodeKind = .fn_declaration
+	name string
+	returns string = "void"
+	params []FnParam
+	body BlockStmt
+}
+
 pub struct IfStmt {
 pub:
 	kind NodeKind = .if_stmt

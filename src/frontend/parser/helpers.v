@@ -43,6 +43,10 @@ fn (mut parser Parser) peak () Token {
 	return parser.tokens[parser.position + 1]
 }
 
+fn (mut parser Parser) tk_back () {
+	parser.position -= 1
+}
+
 fn (mut parser Parser) current () Token {
 	return parser.tokens[parser.position]
 }

@@ -1,6 +1,8 @@
-mut baz []number;
-mut foo number = add(1, 20);
-var bar string = "Hello World";
+fn add (x number, y number) number {
+    return x + y;
+}
 
-baz += [10, 20, 30];
-
+# Passing function expressions as values
+var sum = [10, 20, 30, 40].reduce(fn (prev number, current number) {
+    return current + prev;
+});
