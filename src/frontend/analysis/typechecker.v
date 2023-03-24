@@ -11,24 +11,27 @@ struct TypeInfo {
 
 pub enum TypeKind {
 	null
+	@none
 	any
 	number
 	string
 	boolean
-	complex
+
+	// Complex Types
+	array
+	@interface
+	@union
+	function
 }
 
 interface Type {
 	kind TypeKind
-	satisfies (typename string) bool
+	name string
 }
 
 pub struct Primitive {
 	kind TypeKind = .number
-}
-
-pub fn (t Primitive) satisfies (typename string) bool {
-	return t.kind.str() == typename && t.kind.str() != 'complex'
+	name string [required]
 }
 
 
@@ -36,47 +39,53 @@ pub struct TypeChecker {
 mut:
 	ident_types map[string]TypeInfo
 	types map[string]Type
-	errors bool
+	errors []TypeError
 }
 
-pub fn (mut checker TypeChecker) perform_type_analysis (tree Stmt) bool {
+pub fn (mut checker TypeChecker) perform_type_analysis (tree Stmt) {
 	checker.declare_global_types()
-	checker.check_stmt(tree)
-	return checker.errors
+	checker.check(tree)
+
+	for err in checker.errors {
+		err.display()
+	}
+
+	if checker.errors.len > 0 {
+		exit(1)
+	}
 }
 
-pub fn (mut checker TypeChecker) check_stmt (node Stmt) {
+pub fn (mut checker TypeChecker) check (node Stmt) Type {
 	match node.kind {
 		// Statements
-		.block_stmt { checker.block_stmt(node as BlockStmt) }
-		// 	Expressions
-		// .assignment_expr,
-		// .fn_expr,
-		// .binary_expr,
-		// .unary_expr,
-		// .call_expr,
-		// .in_expr,
-		// .array_literal,
-		// .object_property,
-		// .object_literal,
-		// .member_expr,
+		.block_stmt { return checker.block_stmt(node as BlockStmt) }
+		.var_declaration {}
+		// Expressions
+		.assignment_expr {}
+		.fn_expr {}
+		.binary_expr { return checker.binary(node as Expr as ast.BinaryExpr )}
+		.unary_expr {}
+		.call_expr {}
+		.in_expr {}
+		.array_literal {}
+		.object_property {}
+		.object_literal {}
+		.member_expr {}
 		.number_expr,
 		.string_expr,
-		.ident_expr { checker.check(node as Expr) }
+		.ident_expr { return checker.literal (node as Expr) }
 		else {
-			checker.errors = true
-			print(term.bright_red("Error::TypeAnalysis: "))
-			println("Unknown Type encountered in `check`: ")
-			println(node)
-			exit(1)
+			checker.produce_error(.unknown_ast, "Unknown AST node encountered: ${term.bright_magenta(node.kind.str())}")
 		}
 	}
+
+	return Primitive{kind: .@none, name: "none" }
 }
 
 
 fn (mut checker TypeChecker) declare_global_types () {
-	checker.types['true'] = Primitive{kind: .boolean }
-	checker.types['false'] = Primitive{kind: .boolean }
-	checker.types['null'] = Primitive{kind: .null }
-	checker.types['any'] = Primitive{kind: .any }
+	checker.types['true'] = Primitive{kind: .boolean, name: "boolean" }
+	checker.types['false'] = Primitive{kind: .boolean, name: "boolean" }
+	checker.types['null'] = Primitive{kind: .null, name: "boolean" }
+	checker.types['any'] = Primitive{kind: .any, name: "boolean" }
 }
