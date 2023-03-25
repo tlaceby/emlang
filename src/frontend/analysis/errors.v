@@ -11,8 +11,8 @@ enum ErrorKind {
 }
 
 struct TypeError {
-	message string
-	kind ErrorKind
+	message string  [required]
+	kind ErrorKind  [required]
 	hint string
 }
 

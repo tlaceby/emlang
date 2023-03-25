@@ -18,6 +18,7 @@ pub struct EMCompiler {
 pub fn (mut c EMCompiler) emit_bytecode (entry SourceFile) CodeVal {
 	start := time.now()
 	ast := c.parser.produce_ast(entry)
+	println(ast)
 	mut checker := analysis.TypeChecker{}
 	checker.perform_type_analysis(ast)
 	println(ast)

@@ -110,7 +110,7 @@ fn fun_call (mut parser &Parser, left Expr, bp int) Expr {
 	mut args := []Expr{}
 
 	for parser.not_eof() && parser.current().kind() != .close_paren {
-		args << parser.expression(0)
+		args << parser.expression(bp)
 
 		if parser.current().kind() != .close_paren {
 			parser.expect_hint(.comma, "Expected comma separated list inside call expression. Make sure each argument is separated with a single comma")
@@ -187,14 +187,22 @@ fn object_literal (mut parser &Parser) Expr {
 
 fn member_expr (mut parser &Parser, left Expr, bp int) Expr {
 	computed := parser.prev().kind() == .open_brace
-	right := parser.expression(bp)
 
 	if computed {
+		right := parser.expression(0)
+		println(right)
+		println(parser.current().kind())
 		parser.expect_hint(.close_brace, "Expected closing brace for member expression that is computed ex: foo['bar']")
+		return MemberExpr {
+			computed: computed,
+			lhs: left
+			rhs: right
+		}
 	}
 
+	right := parser.expression(bp)
 	return MemberExpr {
-		computed: computed,
+		computed: false,
 		lhs: left
 		rhs: right
 	}

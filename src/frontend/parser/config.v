@@ -19,7 +19,7 @@ enum Precedence {
 	prefix
 	postfix
 	call
-	primary = 10
+	primary
 }
 
 __global (

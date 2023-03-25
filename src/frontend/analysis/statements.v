@@ -25,9 +25,21 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 	rhs := checker.check(s.rhs)
 	expected_type := s.assigned_type
 
-	if rhs.name == expected_type || expected_type == 'inferred' {
+	// RHS OF []any would also be valid as its simply an empty array
+	other_allowed_rhs := ["[]any"]
+	mut empty_rhs := false
+	// check for empty array or empty struct on rhs
+	if rhs.name in other_allowed_rhs {
+		if expected_type.starts_with("[]") && rhs.name == "[]any" {
+			empty_rhs = true
+		}
+
+		// TODO: Handle struct
+	}
+
+	if rhs.name == expected_type || expected_type == 'inferred' || empty_rhs {
 		// This must be a good variable declaration
-		checker.env.lookup[s.ident] = rhs
+		checker.env.lookup[s.ident] = type_from_typename(expected_type)
 		return rhs
 	}
 

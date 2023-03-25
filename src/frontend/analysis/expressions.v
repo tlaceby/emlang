@@ -19,6 +19,41 @@ fn (mut checker TypeChecker) literal (e ast.Expr) Type {
 	}
 }
 
+fn (mut checker TypeChecker) array_literal (a ast.ArrayExpr) Type {
+	// Return a empty array type which specifies its any kind
+	if a.values.len == 0 {
+		return ArrayType { contains: Primitive{ name: "any", kind: .any },  name: "[]any" }
+	}
+
+	mut found_types := []Type{}
+	// Make sure all elements in the array match the first type
+	for t in a.values {
+		t_kind := checker.check(t)
+		if !(t_kind in found_types) {
+			found_types << t_kind
+		}
+	}
+
+	if found_types.len == 1 {
+		return ArrayType{name: "[]${found_types[0].name}", contains: found_types[0] }
+	}
+
+	// Construct Union Type
+	mut name := "union("
+	for t in found_types[0..found_types.len - 1] {
+		name += t.name + " | "
+	}
+
+	name += found_types[found_types.len - 1].name + ")"
+
+	union_type := UnionType{
+		name: name,
+		contains: found_types
+	}
+
+	return ArrayType{name: "[]${union_type.name}", contains: union_type}
+}
+
 fn (mut checker TypeChecker) binary (e ast.BinaryExpr) Type {
 	l_val := checker.check(e.left)
 	r_val := checker.check(e.right)

@@ -3,31 +3,6 @@ module analysis
 import frontend.ast { BlockStmt, Stmt, Expr }
 import term
 
-pub enum TypeKind {
-	@none
-	any
-	number
-	string
-	boolean
-
-	// Complex Types
-	array
-	@interface
-	@union
-	function
-}
-
-interface Type {
-	kind TypeKind
-	name string
-}
-
-pub struct Primitive {
-	kind TypeKind = .number
-	name string [required]
-}
-
-
 pub struct TypeChecker {
 mut:
 	env TypeEnv
@@ -53,16 +28,16 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 		.block_stmt { return checker.block_stmt(node as BlockStmt) }
 		.var_declaration { return checker.var_declaration(node as ast.VarDeclarationStmt) }
 		// Expressions
-		.assignment_expr {}
-		.fn_expr {}
+		// .assignment_expr {}
+		// .fn_expr {}
 		.binary_expr { return checker.binary(node as Expr as ast.BinaryExpr )}
-		.unary_expr {}
-		.call_expr {}
-		.in_expr {}
-		.array_literal {}
-		.object_property {}
-		.object_literal {}
-		.member_expr {}
+		// .unary_expr {}
+		// .call_expr {}
+		// .in_expr {}
+		.array_literal { return checker.array_literal(node as Expr as ast.ArrayExpr) }
+		// .object_property {}
+		// .object_literal {}
+		// .member_expr {}
 		.number_expr,
 		.string_expr,
 		.ident_expr { return checker.literal (node as Expr) }

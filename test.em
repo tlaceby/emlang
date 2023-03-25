@@ -1,1 +1,1 @@
-var foo []number = 45 * 2.34;
+foo.bar[a.c()];
