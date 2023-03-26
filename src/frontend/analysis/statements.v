@@ -16,10 +16,9 @@ fn (mut checker TypeChecker) block_stmt (s BlockStmt) Type {
 }
 
 fn (mut checker TypeChecker) type_stmt (s ast.TypeStmt) Type {
-	panic("Unimplimented in typechecker")
-	// t := checker.type_from_typename(s.value)
-	// checker.env.define_type(s.typename, t)
-	// return t
+	t := checker.type_from_ast(s.value)
+	checker.env.define_type(s.typename, t)
+	return t
 }
 
 fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
@@ -30,20 +29,20 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 	}
 
 	rhs := checker.check(s.rhs)
-	expected_type := s.assigned_type
+	expected_type := checker.type_from_ast(s.assigned_type)
 
-	if expected_type == "inferred" {
+	if expected_type.kind == .any {
 		checker.env.lookup[s.ident] = rhs
 		return rhs
 	}
 
-	if checker.type_impliments(rhs, checker.type_from_typename(expected_type)) {
+	if checker.type_impliments(rhs, expected_type) {
 		checker.env.lookup[s.ident] = rhs
 		return rhs
 	}
 
 	part := if s.mutable { "mut" } else { "var" }
-	hint := "${part} ${s.ident} ${yellow(expected_type)} -> ${magenta(rhs.name)}"
-	message := "Variable declaration contains mis-matched types. Expected: ${cyan(expected_type)} but received ${yellow(rhs.name)} instead."
+	hint := "${part} ${s.ident} ${yellow(expected_type.name)} -> ${magenta(rhs.name)}"
+	message := "Variable declaration contains mis-matched types. Expected: ${cyan(expected_type.name)} but received ${yellow(rhs.name)} instead."
 	return checker.hint_error(.mismatching_types, hint, message)
 }

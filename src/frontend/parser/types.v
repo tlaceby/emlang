@@ -67,7 +67,8 @@ fn type_primary (mut parser Parser) Type {
 		"string" { return Primitive {value: "string"} }
 		"boolean" { return Primitive {value: "boolean"} }
 		"any" { return Primitive {value: "any" } }
-		else { return Primitive {value: "none"} }
+		"none" { return Primitive {value: "none"} }
+		else { return Primitive { value: parser.prev().val()} }
 	}
 }
 
@@ -130,7 +131,6 @@ fn type_prefix (id TokenKind, bp TypePrecedence, nud TYPE_NUD_FN) {
 
 pub fn (mut parser Parser) type_expr (rbp int) Type {
 	mut tk := parser.advance()
-
 	parser.validate_type_nud()
 	mut nud := type_nud_lookup[tk.kind()]
 	mut left := nud(mut parser)

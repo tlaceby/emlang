@@ -1,5 +1,4 @@
-var foo []string = ["Hello", "World"];
+type NumStr = [](number|string);
 
-fn add(x number, y number, z []number) number {
-    return x + y;
-}
+# Should work
+var foo NumStr = ["hi", 34, "world"];

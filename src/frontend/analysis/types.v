@@ -1,5 +1,7 @@
 module analysis
 
+import frontend.ast
+
 pub enum TypeKind {
 	@none
 	any
@@ -45,25 +47,22 @@ pub fn (mut checker TypeChecker) none_type () Primitive { return Primitive{name:
 pub fn (mut checker TypeChecker) any_type () Primitive { return Primitive{name: "any", kind: .any } }
 pub fn (mut checker TypeChecker) bool_type () Primitive { return Primitive{name: "boolean", kind: .boolean} }
 
-pub fn (mut checker TypeChecker) array_type (inner_typename string) ArrayType {
-	t := checker.type_from_typename(inner_typename)
+pub fn (mut checker TypeChecker) array_type (array ast.Array) ArrayType {
+	t := checker.type_from_ast(array.inner)
 	return ArrayType{kind: .array, name: "[]${t.name}", contains: t }
 }
 
-pub fn (mut checker TypeChecker) union_type (inner_typename string) UnionType {
-	types := inner_typename
-		.replace("|", " ")
-		.split(" ")
-		.filter(it != "").map(fn [mut checker](t string) Type {
-			return checker.type_from_typename(t)
-		})
+pub fn (mut checker TypeChecker) union_type (union_type ast.Union) UnionType {
+	contains := union_type.types.map(fn[mut checker](val ast.Type) Type {
+		return checker.type_from_ast(val)
+	})
 
-	cleaned_inner_str := types.map(fn(t Type) string {
-		return t.name
+	mut name := contains.map(fn(val Type) string{
+		return val.name
 	}).join(" | ")
 
 	return UnionType{
-		name: "union(${cleaned_inner_str})", contains: types
+		name: "(${name})", contains: contains
 	}
 }
 
@@ -85,30 +84,28 @@ fn ( mut checker TypeChecker) type_impliments (a Type, b Type) bool {
 
 	return false
 }
-fn (mut checker TypeChecker) type_from_typename (typename string) Type {
-	match typename {
-		"number"  { return checker.num_type() }
-		"boolean" { return checker.bool_type()  }
-		"string"  { return checker.str_type()   }
-		"any"     { return checker.any_type()   }
-		"none"    { return checker.none_type()  }
-		else  {
-			// Handle array types
-			if typename.starts_with("[]") {
-				return checker.array_type(typename[2..])
+fn (mut checker TypeChecker) type_from_ast (node ast.Type) Type {
+	match node {
+		ast.Primitive {
+			match node.value {
+				"number"  { return checker.num_type()   }
+				"boolean" { return checker.bool_type()  }
+				"string"  { return checker.str_type()   }
+				"none"    { return checker.none_type()  }
+				"any"     { return checker.any_type()   }
+				else 	  {
+					// Handle type literals and user defined types
+					return checker.env.lookup_type(node.value)
+				}
 			}
+		}
 
-			if typename.starts_with("union") {
-				return checker.union_type(typename[6..typename.len - 1])
-			}
-
-			t := checker.env.lookup_type(typename)
-			if t.kind != .@none {
-				return t
-			}
-
-			println("Unknown type encountered in type checker ${typename}")
-			exit(1)
+		ast.Array { return checker.array_type(node) }
+		ast.Union {
+			return checker.union_type(node)
 		}
 	}
+
+	println("Unknown type encountered in type checker ${node.str()}")
+	exit(1)
 }

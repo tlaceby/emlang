@@ -187,7 +187,6 @@ fn variable_declaration (mut parser &Parser) Stmt {
 	}
 
 	declared_type := parser.type_expr(0)
-
 	// accept the variable declaration and eat semicolon
 	if parser.current().kind() == .semicolon {
 		parser.expect(.semicolon)

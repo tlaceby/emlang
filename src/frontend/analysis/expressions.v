@@ -39,7 +39,7 @@ fn (mut checker TypeChecker) array_literal (a ast.ArrayExpr) Type {
 	}
 
 	// Construct Union Type
-	mut name := "union("
+	mut name := "("
 	for t in found_types[0..found_types.len - 1] {
 		name += t.name + " | "
 	}
