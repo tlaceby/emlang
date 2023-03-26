@@ -8,6 +8,7 @@ pub enum TypeKind {
 	number
 	string
 	boolean
+	uninitialized
 
 	// Complex Types
 	array
@@ -50,6 +51,7 @@ pub struct FunctionType {
 }
 
 pub fn (mut checker TypeChecker) num_type () Primitive { return Primitive{name: "number", kind: .number } }
+pub fn (mut checker TypeChecker) uninitialized_type () Primitive { return Primitive{name: "uninitialized", kind: .uninitialized} }
 pub fn (mut checker TypeChecker) str_type () Primitive { return Primitive{name: "string", kind: .string } }
 pub fn (mut checker TypeChecker) none_type () Primitive { return Primitive{name: "none", kind: .@none } }
 pub fn (mut checker TypeChecker) any_type () Primitive { return Primitive{name: "any", kind: .any } }
@@ -178,11 +180,12 @@ fn (mut checker TypeChecker) type_from_ast (node ast.Type) Type {
 	match node {
 		ast.Primitive {
 			match node.value {
-				"number"  { return checker.num_type()   }
-				"boolean" { return checker.bool_type()  }
-				"string"  { return checker.str_type()   }
-				"none"    { return checker.none_type()  }
-				"any"     { return checker.any_type()   }
+				"number"  		{ return checker.num_type()   }
+				"boolean"		{ return checker.bool_type()  }
+				"string"  		{ return checker.str_type()   }
+				"none"    		{ return checker.none_type()  }
+				"any"     		{ return checker.any_type()   }
+				"uninitialized" { return checker.uninitialized_type()   }
 				else 	  {
 					// Handle type literals and user defined types
 					return checker.env.lookup_type(node.value)

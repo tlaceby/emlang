@@ -195,7 +195,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 			mutable: mutable
 			assigned_type: declared_type
 			ident: identifier,
-			rhs: IdentExpr { value: "null" }
+			rhs: IdentExpr { value: "uninitialized" }
 		}
 	}
 

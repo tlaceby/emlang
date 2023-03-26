@@ -110,7 +110,7 @@ fn fun_call (mut parser &Parser, left Expr, bp int) Expr {
 	mut args := []Expr{}
 
 	for parser.not_eof() && parser.current().kind() != .close_paren {
-		args << parser.expression(bp)
+		args << parser.expression(0)
 
 		if parser.current().kind() != .close_paren {
 			parser.expect_hint(.comma, "Expected comma separated list inside call expression. Make sure each argument is separated with a single comma")

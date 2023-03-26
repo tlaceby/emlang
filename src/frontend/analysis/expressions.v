@@ -1,7 +1,7 @@
 module analysis
 
 import frontend.ast
-import term { bold, cyan, red, magenta }
+import term { bold, cyan, red, magenta, bright_yellow, bright_magenta }
 
 fn (mut checker TypeChecker) literal (e ast.Expr) Type {
 	match e.kind {
@@ -69,4 +69,60 @@ fn (mut checker TypeChecker) binary (e ast.BinaryExpr) Type {
 	}
 
 	return checker.hint_error(.mismatching_types, hint, "Binary expression must contain matching types. \nInstead found binary expression with operands: ${e}")
+}
+
+fn (mut checker TypeChecker) assignment (e ast.AssignmentExpr) Type {
+	rhs_type := checker.check(e.rvalue)
+	lhs_type := checker.check(e.lvalue)
+
+	// Make sure right hand type is compatible with left hand side of expression
+	if checker.type_impliments(rhs_type, lhs_type) {
+		return rhs_type
+	}
+
+	hint := "${bold(bright_magenta(lhs_type.name))} = ${bold(bright_yellow(rhs_type.name))}"
+	message := "Assignment expression contains mismatching types.\nlvalue is typeof ${lhs_type.name} however rvalue is typeof ${rhs_type.name}"
+	checker.hint_error(.invalid_assignment, hint, message)
+	return checker.none_type()
+}
+
+fn (mut checker TypeChecker) call_expr (e ast.CallExpr) Type {
+	caller := checker.check(e.caller)
+	args := e.args
+
+	match caller {
+		FunctionType {
+			arg_types := args.map(fn[mut checker](arg ast.Expr) Type {
+				return checker.check(arg)
+			})
+
+			expected_params := caller.params as []Type
+			// Validate function arity
+			if arg_types.len != expected_params.len {
+				hint := "Bad Function Call ${caller.name}"
+				message := "Function call expected ${expected_params.len} args but received ${arg_types.len} instead.\n${e.str()}"
+				checker.hint_error(.bad_function_call, hint, message)
+			} else {
+
+				for index, calling_arg in arg_types {
+					expected_arg := checker.check(args[index])
+					if checker.type_impliments(calling_arg, expected_arg) == false {
+						hint := "args don't match"
+						expected_message := "Expected: ${bold(bright_magenta(expected_arg.name))} but received ${bold(bright_yellow(calling_arg.name))} instead"
+						message := "Argument at position ${index + 1} of arguments list does not match expected type.\n${expected_message}"
+						checker.hint_error(.bad_function_call, hint, message)
+					}
+				}
+
+				return caller.result as Type
+			}
+		}
+		else {
+			hint := "Bad Call ${caller.name}"
+			message := "lvalue of call is not callable.\n${e.str()}"
+			checker.hint_error(.bad_function_call, hint, message)
+		}
+	}
+
+	return checker.none_type()
 }

@@ -32,14 +32,14 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 		// Statements
 		.block_stmt { return checker.block_stmt(node as BlockStmt) }
 		.var_declaration { return checker.var_declaration(node as ast.VarDeclarationStmt) }
-		.fn_declaration  { return checker.function_declation( node as ast.FnDeclaration) }
+		.fn_declaration  { return checker.function_declaration( node as ast.FnDeclaration) }
 		.return_stmt 	 { return checker.return_stmt (node as ast.ReturnStmt) }
 		// Expressions
-		// .assignment_expr {}
+		.assignment_expr { return checker.assignment(node as Expr as ast.AssignmentExpr)}
 		// .fn_expr {}
 		.binary_expr { return checker.binary(node as Expr as ast.BinaryExpr )}
 		// .unary_expr {}
-		// .call_expr {}
+		.call_expr { return checker.call_expr(node as Expr as ast.CallExpr) }
 		// .in_expr {}
 		.array_literal { return checker.array_literal(node as Expr as ast.ArrayExpr) }
 		// .object_property {}
@@ -60,14 +60,16 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 
 fn (mut checker TypeChecker) declare_global_types () {
 	// Define types
-	checker.env.define_type("boolean", Primitive{kind: .boolean, name: "boolean" })
-	checker.env.define_type("any", Primitive{kind: .any, name: "any" })
-	checker.env.define_type("none", Primitive{kind: .@none, name: "none" })
+	checker.env.define_type("boolean", checker.bool_type())
+	checker.env.define_type("any", checker.any_type())
+	checker.env.define_type("none", checker.none_type())
+	checker.env.define_type("uninitialized", checker.uninitialized_type())
+	// uninitialized
 
 	// Define literals to a type
 	checker.env.lookup["none"] = checker.env.types["none"]
 	checker.env.lookup["any"] = checker.env.types["any"]
 	checker.env.lookup["true"] = checker.env.types["boolean"]
 	checker.env.lookup["false"] = checker.env.types["boolean"]
-
+	checker.env.lookup["uninitialized"] = checker.env.types["uninitialized"]
 }

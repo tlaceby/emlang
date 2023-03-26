@@ -1,8 +1,7 @@
-type Color = string;
-var foo Color = "red";
-
 fn add (x number, y number) number {
-    x + y;
+    return x + y;
 }
 
-var result = add(10, 20);
+mut result number;
+# result = add(11.23 * 2, add(10, 20));
+add();

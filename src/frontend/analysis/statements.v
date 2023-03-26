@@ -8,7 +8,7 @@ fn (mut checker TypeChecker) return_stmt (s ast.ReturnStmt) Type {
 	return checker.check(s.rvalue)
 }
 
-fn (mut checker TypeChecker) function_declation (s ast.FnDeclaration) Type {
+fn (mut checker TypeChecker) function_declaration (s ast.FnDeclaration) Type {
 	fn_name := s.name
 	fn_type := checker.function_type(s.fn_type)
 
@@ -27,7 +27,7 @@ fn (mut checker TypeChecker) function_declation (s ast.FnDeclaration) Type {
 	for stmt in s.body.body {
 		match stmt {
 			ast.ReturnStmt { found_return_types << checker.check(stmt.rvalue) }
-			else {} // continue if not return stmt
+			else { checker.check( stmt )} // check statement but dont check for return
 		}
 	}
 
@@ -83,7 +83,7 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 	rhs := checker.check(s.rhs)
 	expected_type := checker.type_from_ast(s.assigned_type)
 
-	// check for array literals and object literals for default empty literals
+	// check for array literals and object literals for default empty literals and any
 	// eg: [] | {}
 	match s.rhs {
 		ast.ArrayExpr {
@@ -98,7 +98,13 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 				return expected_type
 			}
 		}
-		else {}
+		else {
+			// Check for any on rhs. This would
+			if rhs.name == "uninitialized" {
+				checker.env.lookup[s.ident] = expected_type
+				return expected_type
+			}
+		}
 	}
 
 	if expected_type.kind == .any {
