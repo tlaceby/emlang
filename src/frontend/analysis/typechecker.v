@@ -32,6 +32,8 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 		// Statements
 		.block_stmt { return checker.block_stmt(node as BlockStmt) }
 		.var_declaration { return checker.var_declaration(node as ast.VarDeclarationStmt) }
+		.fn_declaration  { return checker.function_declation( node as ast.FnDeclaration) }
+		.return_stmt 	 { return checker.return_stmt (node as ast.ReturnStmt) }
 		// Expressions
 		// .assignment_expr {}
 		// .fn_expr {}

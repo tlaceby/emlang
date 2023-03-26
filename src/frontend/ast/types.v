@@ -4,6 +4,7 @@ pub enum TypeNodeKind {
 	@union
 	array
 	primitive
+	function
 }
 pub struct Union {
 	pub mut:
@@ -23,4 +24,11 @@ pub struct Primitive {
 	value string [required]
 }
 
-pub type Type = Union | Array | Primitive
+pub struct Function {
+pub mut:
+	kind TypeNodeKind = .function
+	params []Type [required]
+	result Type = Primitive{value: "none" } // default of none -> void
+}
+
+pub type Type = Union | Array | Primitive | Function

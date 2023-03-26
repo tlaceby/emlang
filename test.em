@@ -1,3 +1,8 @@
-type Foo = []number;
+type Color = string;
+var foo Color = "red";
 
-var bar Foo = [];
+fn add (x number, y number) number {
+    x + y;
+}
+
+var result = add(10, 20);

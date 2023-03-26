@@ -8,6 +8,7 @@ enum ErrorKind {
 	undefined_identifier
 	unknown_ast
 	invalid_operation
+	bad_return_type
 }
 
 struct TypeError {

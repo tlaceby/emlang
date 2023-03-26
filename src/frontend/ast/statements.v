@@ -43,9 +43,9 @@ pub struct FnDeclaration {
 pub mut:
 	kind NodeKind = .fn_declaration
 	name string
-	returns  Type
-	params []FnParam
-	body BlockStmt
+	params []FnParam [required]
+	fn_type Function [required]
+	body BlockStmt   [required]
 }
 
 pub struct IfStmt {

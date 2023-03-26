@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Stmt, ReturnStmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt, FnDeclaration, FnParam, TypeStmt }
+import frontend.ast { Stmt, ReturnStmt, Type, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt, FnDeclaration, FnParam, TypeStmt }
 import frontend.parser.lexer { TokenKind }
 
 pub fn (mut parser Parser) statement () Stmt {
@@ -153,7 +153,7 @@ fn fn_declaration (mut parser &Parser) Stmt {
 		body := parser.block() as BlockStmt
 		return FnDeclaration{
 			params: params_list,
-			returns: return_type,
+			fn_type: parser.create_fn_type(params_list, return_type)
 			body: body,
 			name: name
 		}
@@ -164,7 +164,8 @@ fn fn_declaration (mut parser &Parser) Stmt {
 	return FnDeclaration{
 		params: params_list,
 		body: body,
-		name: name
+		name: name,
+		fn_type: parser.create_fn_type(params_list, ast.Primitive{value: "none"})
 	}
 
 }
@@ -209,5 +210,11 @@ fn variable_declaration (mut parser &Parser) Stmt {
 		ident: identifier,
 		rhs: rhs
 	}
+}
 
+fn (mut parser Parser) create_fn_type (params []FnParam, result Type) ast.Function {
+	return ast.Function{
+		params: params.map(it.param_type),
+		result: result
+	}
 }
