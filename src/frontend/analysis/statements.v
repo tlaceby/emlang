@@ -76,7 +76,7 @@ fn (mut checker TypeChecker) type_stmt (s ast.TypeStmt) Type {
 fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 
 	if s.ident in checker.env.lookup {
-		hint := s.ident + " cannot be re-declared in the same scope"
+		hint := s.ident + "cannot be re-declared in the same scope"
 		return checker.hint_error(.variable_re_declaration, hint, "Attempted to redeclare variable twice in the same scope. Did you mean to reassign the variable instead?")
 	}
 
@@ -92,12 +92,14 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 				return expected_type
 			}
 		}
+
 		ast.ObjectExpr{
 			if s.rhs.values.len == 0 {
 				checker.env.lookup[s.ident] = expected_type
 				return expected_type
 			}
 		}
+
 		else {
 			// Check for any on rhs. This would
 			if rhs.name == "uninitialized" {
