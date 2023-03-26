@@ -76,7 +76,7 @@ fn (mut checker TypeChecker) assignment (e ast.AssignmentExpr) Type {
 	lhs_type := checker.check(e.lvalue)
 
 	// Make sure right hand type is compatible with left hand side of expression
-	if checker.type_impliments(rhs_type, lhs_type) {
+	if checker.type_implements(rhs_type, lhs_type) {
 		return rhs_type
 	}
 
@@ -106,7 +106,7 @@ fn (mut checker TypeChecker) call_expr (e ast.CallExpr) Type {
 
 				for index, calling_arg in arg_types {
 					expected_arg := checker.check(args[index])
-					if checker.type_impliments(calling_arg, expected_arg) == false {
+					if checker.type_implements(calling_arg, expected_arg) == false {
 						hint := "args don't match"
 						expected_message := "Expected: ${bold(bright_magenta(expected_arg.name))} but received ${bold(bright_yellow(calling_arg.name))} instead"
 						message := "Argument at position ${index + 1} of arguments list does not match expected type.\n${expected_message}"

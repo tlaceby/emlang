@@ -43,7 +43,7 @@ fn (mut checker TypeChecker) function_declaration (s ast.FnDeclaration) Type {
 
 	// check that each element in the array is the same as the expected return type
 	for t in found_return_types {
-		if checker.type_impliments(t, fn_type.result) == false {
+		if checker.type_implements(t, fn_type.result) == false {
 			hint := bold("${fn_type.name}")
 			message := "Declaration for function `${bold(fn_name)}` has a mismatching return type. Function return type specified does not match the one provided.\nExpected: ${bright_cyan(fn_type.result.name)} but function returns ${bright_yellow(t.name)} instead."
 			checker.hint_error(.bad_return_type, hint, message)
@@ -114,7 +114,7 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 		return rhs
 	}
 
-	if checker.type_impliments(rhs, expected_type) {
+	if checker.type_implements(rhs, expected_type) {
 		checker.env.lookup[s.ident] = rhs
 		return rhs
 	}
