@@ -31,6 +31,24 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 	rhs := checker.check(s.rhs)
 	expected_type := checker.type_from_ast(s.assigned_type)
 
+	// check for array literals and object literals for default empty literals
+	// eg: [] | {}
+	match s.rhs {
+		ast.ArrayExpr {
+			if s.rhs.values.len == 0 {
+				checker.env.lookup[s.ident] = expected_type
+				return expected_type
+			}
+		}
+		ast.ObjectExpr{
+			if s.rhs.values.len == 0 {
+				checker.env.lookup[s.ident] = expected_type
+				return expected_type
+			}
+		}
+		else {}
+	}
+
 	if expected_type.kind == .any {
 		checker.env.lookup[s.ident] = rhs
 		return rhs

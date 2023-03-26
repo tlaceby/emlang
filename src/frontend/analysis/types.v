@@ -66,6 +66,61 @@ pub fn (mut checker TypeChecker) union_type (union_type ast.Union) UnionType {
 	}
 }
 
+
+fn (mut checker TypeChecker) impliments_array (a Type, b ArrayType) bool {
+	if b.contains.kind == .any { return true }
+
+	// for a to be a valid type it must be an array just like b
+	match a {
+		ArrayType{
+			return checker.type_impliments(a.contains, b.contains)
+		}
+		else { return false }
+	}
+
+	return false
+}
+
+fn (mut checker TypeChecker) impliments_union (a Type, b UnionType) bool {
+	if b.contains.any(it.kind == .any) { return true }
+
+	// first check if they are both unions
+	match a {
+		UnionType {
+			// check that each member of a is at-least in b
+			for elem_a in a.contains {
+				mut success := false
+				for elem_b in b.contains {
+					if checker.type_impliments(elem_a, elem_b) {
+						success = true
+					}
+
+				}
+
+				// Having no success means that type in a not in b cannot be a strict subset of b then
+				if success == false {
+					return false
+				}
+			}
+
+			return true
+		}
+
+		Primitive {
+			return a.kind in b.contains.map(fn(t Type) TypeKind { return t.kind})
+		}
+
+		ArrayType {
+			// should literally never happen?
+			println("unknown/implimented type a == array and b == union?")
+			// for array check if the array.contains is in the union.contains
+			return false
+		}
+		else {}
+	}
+
+	return false
+}
 // Given two types makes sure a is at-least a subset of b
 fn ( mut checker TypeChecker) type_impliments (a Type, b Type) bool {
 	if a == b {
@@ -75,10 +130,9 @@ fn ( mut checker TypeChecker) type_impliments (a Type, b Type) bool {
 	if b.kind == .any { return true }
 
 	match b {
-		UnionType { return a in b.contains }
-		ArrayType {
-			if b.contains.kind == .any { return true }
-		}
+		UnionType { return checker.impliments_union(a, b) }
+		ArrayType { return checker.impliments_array (a, b) }
+
 		else { return false }
 	}
 

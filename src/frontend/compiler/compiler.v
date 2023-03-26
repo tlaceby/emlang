@@ -21,7 +21,7 @@ pub fn (mut c EMCompiler) emit_bytecode (entry SourceFile) CodeVal {
 	ast := c.parser.produce_ast(entry)
 	mut checker := analysis.TypeChecker{}
 	checker.perform_type_analysis(ast)
-	println(ast)
+	// println(ast)
 	end := time.now()
 
 	println("time: ${end - start}")

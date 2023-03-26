@@ -1,4 +1,3 @@
-type NumStr = [](number|string);
+type Foo = []number;
 
-# Should work
-var foo NumStr = ["hi", 34, "world"];
+var bar Foo = [];
