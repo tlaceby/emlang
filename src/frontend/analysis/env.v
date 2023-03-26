@@ -1,5 +1,7 @@
 module analysis
 
+import term { bold, bright_red, bright_yellow, bright_magenta }
+
 struct NoEnv {}
 
 type EnvNode = NoEnv | TypeEnv
@@ -30,7 +32,16 @@ pub fn (mut env TypeEnv) lookup_type (typename string) Type {
 
 	match mut env.parent {
 		TypeEnv{ return env.parent.lookup_type(typename) }
-		else { return Primitive { kind: .@none, name: "none" }}
+		else {
+			kind := "unknown_type"
+			hint := "could not resolve type ${bold(bright_yellow(typename))}"
+			message := "Attempted to lookup typename ${typename} however this type does not exist."
+			header := bright_red("TypeError") + "::" + bold(kind) + "  " + hint
+
+			println(header)
+			println(message)
+			exit(1)
+		}
 	}
 
 }

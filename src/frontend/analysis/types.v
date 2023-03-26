@@ -64,10 +64,15 @@ pub fn (mut checker TypeChecker) array_type (array ast.Array) ArrayType {
 
 pub fn (mut checker TypeChecker) function_type (func ast.Function) FunctionType {
 	params := func.params.map(fn[mut checker](t ast.Type) Type {
-		return checker.type_from_ast(t)
+		kind := checker.type_from_ast(t)
+		return kind
 	})
 
 	result := checker.type_from_ast(func.result)
+	// check type here
+	if result.kind == .@none {
+		checker.produce_error(.bad_return_type, "Function cannot return typeof none. ${func.str()}")
+	}
 
 	result_name := result.name
 	params_name := params.map(it.name).join(",")
@@ -185,6 +190,7 @@ fn (mut checker TypeChecker) type_from_ast (node ast.Type) Type {
 				"string"  		{ return checker.str_type()   }
 				"none"    		{ return checker.none_type()  }
 				"any"     		{ return checker.any_type()   }
+				"void"     		{ return Primitive{name: "void", kind: .uninitialized} }
 				"uninitialized" { return checker.uninitialized_type()   }
 				else 	  {
 					// Handle type literals and user defined types

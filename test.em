@@ -1,14 +1,13 @@
-type NumberOrString = number | string;
+type num = number;
+type str = string;
+type NumStr = str | num;
+
 fn tuple (x NumStr, y NumStr) []NumStr {
     return [x, y];
 }
 
-fn add (x number, y number) number {
+fn add (x number, y num) number {
     return x + y;
 }
 
-var x = 45.21 + add(10,20);
-var y = x /2;
-
-var tuple_maker = tuple;
-var elements = tuple_maker(x, y);
+var foo = tuple(add(1.234, 43), "32");

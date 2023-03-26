@@ -28,7 +28,7 @@ pub struct Function {
 pub mut:
 	kind TypeNodeKind = .function
 	params []Type [required]
-	result Type = Primitive{value: "none" } // default of none -> void
+	result Type = Primitive{value: "void" } // default of none -> void
 }
 
 pub type Type = Union | Array | Primitive | Function

@@ -165,7 +165,7 @@ fn fn_declaration (mut parser &Parser) Stmt {
 		params: params_list,
 		body: body,
 		name: name,
-		fn_type: parser.create_fn_type(params_list, ast.Primitive{value: "none"})
+		fn_type: parser.create_fn_type(params_list, ast.Primitive{value: "void"})
 	}
 
 }
