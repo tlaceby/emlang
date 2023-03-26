@@ -32,6 +32,7 @@ __global (
 
 
 fn init () {
+	init_type_parser()
 	mut bp_lookup := map[TokenKind]Precedence{}
 	mut led_lookup := map[TokenKind]LED_FN{}
 	mut stmt_lookup := map[TokenKind]STMT_FN{}
@@ -97,6 +98,7 @@ fn init () {
 	stmt(.@if, if_stmt)
 	stmt(.@for, for_stmt)
 	stmt(.while, while_stmt)
+	stmt(.@type, type_stmt)
 
 	stmt(.@return, return_stmt)
 

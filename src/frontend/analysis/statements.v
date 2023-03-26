@@ -15,6 +15,13 @@ fn (mut checker TypeChecker) block_stmt (s BlockStmt) Type {
 	return Primitive{kind: .@none, name: "none" }
 }
 
+fn (mut checker TypeChecker) type_stmt (s ast.TypeStmt) Type {
+	panic("Unimplimented in typechecker")
+	// t := checker.type_from_typename(s.value)
+	// checker.env.define_type(s.typename, t)
+	// return t
+}
+
 fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 
 	if s.ident in checker.env.lookup {
@@ -25,21 +32,13 @@ fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {
 	rhs := checker.check(s.rhs)
 	expected_type := s.assigned_type
 
-	// RHS OF []any would also be valid as its simply an empty array
-	other_allowed_rhs := ["[]any"]
-	mut empty_rhs := false
-	// check for empty array or empty struct on rhs
-	if rhs.name in other_allowed_rhs {
-		if expected_type.starts_with("[]") && rhs.name == "[]any" {
-			empty_rhs = true
-		}
-
-		// TODO: Handle struct
+	if expected_type == "inferred" {
+		checker.env.lookup[s.ident] = rhs
+		return rhs
 	}
 
-	if rhs.name == expected_type || expected_type == 'inferred' || empty_rhs {
-		// This must be a good variable declaration
-		checker.env.lookup[s.ident] = type_from_typename(expected_type)
+	if checker.type_impliments(rhs, checker.type_from_typename(expected_type)) {
+		checker.env.lookup[s.ident] = rhs
 		return rhs
 	}
 

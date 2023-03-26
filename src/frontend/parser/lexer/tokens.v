@@ -30,6 +30,7 @@ pub enum TokenKind {
 	dot
 	comma
 	question
+	bar
 
 	percent
 	plus
@@ -63,6 +64,8 @@ pub enum TokenKind {
 	@for
 
 	@typeof
+	@union
+	@type
 	@in // in
 	@or // ||
 	and // &&

@@ -1,1 +1,1 @@
-foo.bar[a.c()];
+type Color = [][](number | []string | ([]any | any));

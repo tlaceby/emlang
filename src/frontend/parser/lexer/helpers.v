@@ -102,6 +102,8 @@ fn (mut lexer Lexer) build_identifier () {
 	reserved_keywords["while"] = .while
 	reserved_keywords["for"] = .@for
 
+	reserved_keywords["type"] = .@type
+	reserved_keywords["union"] = .@union
 	reserved_keywords["typeof"] = .@typeof
 	reserved_keywords["in"] = .@in
 	reserved_keywords["or"] = .@or

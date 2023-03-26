@@ -13,6 +13,9 @@ pub fn (mut checker TypeChecker) perform_type_analysis (tree Stmt) {
 	checker.declare_global_types()
 	checker.check(tree)
 
+	if checker.errors.len > 0 {
+		println(term.bright_yellow("Type Analysis Failure") + " ${checker.errors.len} issues encountered")
+	}
 	for err in checker.errors {
 		err.display()
 	}
@@ -20,6 +23,8 @@ pub fn (mut checker TypeChecker) perform_type_analysis (tree Stmt) {
 	if checker.errors.len > 0 {
 		exit(1)
 	}
+
+	println(term.bright_cyan("Analysis Complete"))
 }
 
 pub fn (mut checker TypeChecker) check (node Stmt) Type {
@@ -38,6 +43,7 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 		// .object_property {}
 		// .object_literal {}
 		// .member_expr {}
+		.type_stmt { return checker.type_stmt (node as ast.TypeStmt)}
 		.number_expr,
 		.string_expr,
 		.ident_expr { return checker.literal (node as Expr) }

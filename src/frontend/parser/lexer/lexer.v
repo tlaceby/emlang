@@ -56,6 +56,7 @@ pub fn (mut lexer Lexer) tokenize () []Token {
 			']' { lexer.mk_single_tk(.close_brace) }
 			'{' { lexer.mk_single_tk(.open_bracket) }
 			'}' { lexer.mk_single_tk(.close_bracket) }
+			'|' { lexer.mk_single_tk(.bar )}
 			',' { lexer.mk_single_tk(.comma) }
 			':' { lexer.mk_single_tk(.colon ) }
 			"?" { lexer.mk_single_tk(.question) }

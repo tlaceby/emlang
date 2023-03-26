@@ -23,6 +23,18 @@ fn (mut parser Parser) validate_nud () {
 	}
 }
 
+fn (mut parser Parser) validate_type_nud () {
+	// Make sure there exists a nud
+	tk := parser.previous
+	if !(tk.kind() in type_nud_lookup) {
+		hint := "This syntax is unsupported in ${term.bold("em")}"
+		err := mk_error("Token provided does not contain a valid type_nud function\n${term.dim(parser.prev().str())}", hint, .unexpected_token)
+		parser.error(err)
+		exit(1)
+	}
+}
+
+
 fn (mut parser Parser) err_header (err ParserError) {
 	loc := parser.previous.loc()
 	filename := parser.file.name
@@ -130,6 +142,18 @@ fn (mut parser Parser) validate_led () {
 	if !(tk.kind() in led_lookup){
 		hint := "This syntax is unsupported in ${term.bold("em")}"
 		err := mk_error("Token provided does not contain a valid led function\n${term.dim(parser.prev().str())}", hint, .unexpected_token)
+		parser.error(err)
+		exit(1)
+	}
+}
+
+fn (mut parser Parser) validate_type_led () {
+	// Make sure there exists a nud
+	tk := parser.previous
+
+	if !(tk.kind() in type_led_lookup){
+		hint := "This syntax is unsupported in ${term.bold("em")}"
+		err := mk_error("Token provided does not contain a valid type_led function\n${term.dim(parser.prev().str())}", hint, .unexpected_token)
 		parser.error(err)
 		exit(1)
 	}

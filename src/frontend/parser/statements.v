@@ -1,7 +1,8 @@
 module parser
 
-import frontend.ast { Stmt, ReturnStmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt, FnDeclaration, FnParam }
+import frontend.ast { Stmt, ReturnStmt, BlockStmt, NodeKind, VarDeclarationStmt, IdentExpr, IfStmt, ForStmt , WhileStmt, FnDeclaration, FnParam, TypeStmt }
 import frontend.parser.lexer { TokenKind }
+
 pub fn (mut parser Parser) statement () Stmt {
 	tk := parser.current()
 

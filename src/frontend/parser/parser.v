@@ -2,6 +2,7 @@ module parser
 
 import frontend.ast { Expr, Stmt, BlockStmt }
 import frontend.parser.lexer { build_lexer, SourceFile , Token, TokenKind, mk_token }
+import term
 
 pub struct Parser {
 mut:
@@ -34,6 +35,7 @@ pub fn (mut parser Parser) produce_ast (file SourceFile) Stmt {
 		block << parser.statement()
 	}
 
+	println(term.bright_green("Parsing Complete"))
 	return BlockStmt{ body: block }
 }
 

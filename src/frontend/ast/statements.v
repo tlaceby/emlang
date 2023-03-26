@@ -32,6 +32,13 @@ pub mut:
 	rvalue Expr
 }
 
+pub struct TypeStmt {
+pub mut:
+	kind NodeKind = .type_stmt
+	typename string
+	value Type
+}
+
 pub struct FnDeclaration {
 pub mut:
 	kind NodeKind = .fn_declaration
