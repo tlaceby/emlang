@@ -55,15 +55,3 @@ fn (mut parser Parser) prev () Token {
 	// TODO: Check bounds
 	return parser.previous
 }
-
-fn (mut parser Parser) type_at () string {
-	mut tk := parser.advance()
-	mut type_kind  := tk.val()
-	allowed_kinds := [TokenKind.symbol, .open_brace, .close_brace]
-
-	for parser.not_eof() && parser.current().kind() in allowed_kinds {
-		type_kind += parser.advance().val()
-	}
-
-	return type_kind
-}

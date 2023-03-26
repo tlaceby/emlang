@@ -97,7 +97,7 @@ fn union_builder (mut parser &Parser, left Type, bp int) Type {
 
 	types << left
 
-	ending := [TokenKind.close_paren, .semicolon]
+	ending := [TokenKind.close_paren, .semicolon, .open_bracket, .close_bracket]
 	for parser.not_eof() {
 		types << parser.type_expr(bp)
 

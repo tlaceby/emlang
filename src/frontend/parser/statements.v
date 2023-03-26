@@ -133,7 +133,7 @@ fn fn_declaration (mut parser &Parser) Stmt {
 			exit(1)
 		}
 
-		declared_type := parser.type_at()
+		declared_type := parser.type_expr(0)
 
 		if parser.current().kind() != .close_paren {
 			parser.expect(.comma)
@@ -146,21 +146,27 @@ fn fn_declaration (mut parser &Parser) Stmt {
 	}
 
 	parser.expect(.close_paren)
-	mut return_type := "void"
 
 	// Check for block open. If it is not there then a return type was passed
 	if parser.current().kind() != .open_bracket {
-		return_type = parser.type_at()
+		return_type := parser.type_expr(0)
+		body := parser.block() as BlockStmt
+		return FnDeclaration{
+			params: params_list,
+			returns: return_type,
+			body: body,
+			name: name
+		}
 	}
 
-	body := parser.block() as BlockStmt
 
+	body := parser.block() as BlockStmt
 	return FnDeclaration{
 		params: params_list,
-		returns: return_type,
 		body: body,
 		name: name
 	}
+
 }
 
 fn variable_declaration (mut parser &Parser) Stmt {
@@ -180,7 +186,7 @@ fn variable_declaration (mut parser &Parser) Stmt {
 		}
 	}
 
-	declared_type := parser.type_at()
+	declared_type := parser.type_expr(0)
 
 	// accept the variable declaration and eat semicolon
 	if parser.current().kind() == .semicolon {

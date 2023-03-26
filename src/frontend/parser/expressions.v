@@ -1,6 +1,6 @@
 module parser
 
-import frontend.ast { Expr, NodeKind, MemberExpr, AssignmentExpr , FnExpr, FnParam, InExpr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp, BlockStmt }
+import frontend.ast { Expr, Primitive, NodeKind, MemberExpr, AssignmentExpr , FnExpr, FnParam, InExpr , BinaryExpr, IdentExpr, NumberExpr, StringExpr, CallExpr, ArrayExpr, ObjectExpr, ObjectProp, BlockStmt }
 import term
 
 fn binary (mut parser &Parser, left Expr, bp int) Expr {
@@ -63,7 +63,7 @@ fn fn_expression (mut parser &Parser) Expr {
 			exit(1)
 		}
 
-		declared_type := parser.type_at()
+		declared_type := parser.type_expr(0)
 
 		if parser.current().kind() != .close_paren {
 			parser.expect(.comma)
@@ -76,11 +76,11 @@ fn fn_expression (mut parser &Parser) Expr {
 	}
 
 	parser.expect(.close_paren)
-	mut return_type := "void"
+	mut return_type := Primitive{ value: "none" }
 
 	// Check for block open. If it is not there then a return type was passed
 	if parser.current().kind() != .open_bracket {
-		return_type = parser.type_at()
+		return_type = parser.type_expr(0) as ast.Primitive
 	}
 
 	body := parser.block() as BlockStmt

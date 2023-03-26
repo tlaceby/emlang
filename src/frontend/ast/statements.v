@@ -12,18 +12,18 @@ pub struct BlockStmt {
 // syntax tree (AST), containing the scope, identifier, and the right-hand side expression.
 pub struct VarDeclarationStmt {
 	pub:
-	kind NodeKind = .var_declaration            // The node type of the variable declaration statement
-	mutable bool                                 // Whether the variable is defined as mut
-	assigned_type string	  = "inferred"      // Type the user declared variable to be
-	ident string                                // The name of the variable being declared
-	rhs    Expr                                 // The right-hand side expression for the variable declaration
+	kind NodeKind = .var_declaration           		// The node type of the variable declaration statement
+	mutable bool                                	// Whether the variable is defined as mut
+	assigned_type  Type = Primitive{value: "any",}  // Type the user declared variable to be
+	ident string                                	// The name of the variable being declared
+	rhs    Expr                                 	// The right-hand side expression for the variable declaration
 }
 
 pub struct FnParam {
 pub mut:
 	kind NodeKind = .fn_param
-	name string
-	param_type string
+	name string     [required]
+	param_type Type [required]
 }
 
 pub struct ReturnStmt {
@@ -43,7 +43,7 @@ pub struct FnDeclaration {
 pub mut:
 	kind NodeKind = .fn_declaration
 	name string
-	returns string = "void"
+	returns  Type
 	params []FnParam
 	body BlockStmt
 }

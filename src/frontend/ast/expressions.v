@@ -36,7 +36,7 @@ pub struct CallExpr {
 pub struct FnExpr {
 pub mut:
 	kind NodeKind = .fn_expr
-	returns string = "void"
+	returns Type = Primitive { value: "none" }
 	params []FnParam
 	body BlockStmt
 }
