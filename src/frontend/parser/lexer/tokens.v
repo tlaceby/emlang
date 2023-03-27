@@ -63,7 +63,6 @@ pub enum TokenKind {
 	while
 	@for
 
-	@typeof
 	@union
 	@type
 	extern
