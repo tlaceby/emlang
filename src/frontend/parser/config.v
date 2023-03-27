@@ -98,7 +98,9 @@ fn init () {
 	stmt(.@if, if_stmt)
 	stmt(.@for, for_stmt)
 	stmt(.while, while_stmt)
+
 	stmt(.@type, type_stmt)
+	stmt(.extern, extern_stmt)
 
 	stmt(.@return, return_stmt)
 

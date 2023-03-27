@@ -35,7 +35,7 @@ fn (mut checker TypeChecker) function_declaration (s ast.FnDeclaration) Type {
 	checker.env = prev_env
 
 	// check for empty array as that means the function never returns
-	if found_return_types.len == 0 {
+	if found_return_types.len == 0 && fn_type.result.kind != .uninitialized {
 		hint := bold("${fn_type.name}")
 		message := "Declaration for function `${bold(fn_name)}` returns no value. Function return type was specified as ${bold(bright_yellow(fn_type.result.name))} however function returns nothing."
 		checker.hint_error(.bad_return_type, hint, message)
@@ -71,6 +71,13 @@ fn (mut checker TypeChecker) type_stmt (s ast.TypeStmt) Type {
 	t := checker.type_from_ast(s.value)
 	checker.env.define_type(s.typename, t)
 	return t
+}
+
+fn (mut checker TypeChecker) extern_stmt (s ast.ExternStmt) Type {
+	fn_name := s.func_name
+	fn_value := checker.type_from_ast(s.func_type)
+	checker.env.lookup[fn_name] = fn_value
+	return fn_value
 }
 
 fn (mut checker TypeChecker) var_declaration (s VarDeclarationStmt) Type {

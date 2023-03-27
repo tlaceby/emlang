@@ -39,6 +39,13 @@ pub mut:
 	value Type
 }
 
+pub struct ExternStmt {
+	pub mut:
+	kind NodeKind = .extern_stmt
+	func_name string   [required]
+	func_type Function [required]
+}
+
 pub struct FnDeclaration {
 pub mut:
 	kind NodeKind = .fn_declaration

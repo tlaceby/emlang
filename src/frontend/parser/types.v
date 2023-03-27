@@ -157,3 +157,44 @@ fn type_stmt (mut parser &Parser) Stmt {
 		typename: typename, value:t
 	}
 }
+
+
+fn extern_stmt (mut parser &Parser) Stmt {
+	parser.advance()
+	func_name := parser.expect(.symbol).val()
+	parser.expect_hint(.open_paren, "Missing open paren inside extern statement. Expected functions parameters")
+
+	mut params := []Type{}
+	for parser.not_eof() && parser.current().kind() != .close_paren {
+		params << parser.type_expr(0)
+
+		if parser.current().kind() == .close_paren {
+			break
+		}
+
+		parser.expect(.comma)
+	}
+
+	parser.expect_hint(.close_paren, "Missing closing paren for external fn stmt")
+
+	if parser.current().kind() == .semicolon {
+		parser.expect(.semicolon)
+		func_type := ast.Function{
+			params: params
+		}
+
+		return ast.ExternStmt{
+			func_name: func_name, func_type: func_type
+		}
+	}
+
+	result := parser.type_expr(0)
+	func_type := ast.Function{
+		params: params, result: result
+	}
+
+	parser.expect(.semicolon)
+	return ast.ExternStmt{
+		func_name: func_name, func_type: func_type
+	}
+}

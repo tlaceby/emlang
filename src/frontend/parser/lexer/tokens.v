@@ -66,6 +66,8 @@ pub enum TokenKind {
 	@typeof
 	@union
 	@type
+	extern
+	@interface
 	@in // in
 	@or // ||
 	and // &&

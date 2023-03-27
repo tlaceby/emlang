@@ -10,6 +10,7 @@ pub enum NodeKind {
 	while_stmt
 	if_stmt
 	type_stmt
+	extern_stmt
 
 	return_stmt
 
@@ -43,7 +44,7 @@ UnaryExpr | CallExpr | ArrayExpr | ObjectExpr | ObjectProp | InExpr | MemberExpr
 
 // Stmt is a union type that represents the different types of statements in the AST.
 pub type Stmt = Expr | BlockStmt | VarDeclarationStmt | IfStmt | ForStmt | WhileStmt | FnDeclaration | ReturnStmt |
-TypeStmt
+TypeStmt | ExternStmt
 
 // Node is a union type that represents both statements and expressions in the AST.
 pub type Node = Stmt | Expr

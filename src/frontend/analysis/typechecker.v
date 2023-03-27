@@ -31,6 +31,8 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 	match node.kind {
 		// Statements
 		.block_stmt { return checker.block_stmt(node as BlockStmt) }
+		.type_stmt { return checker.type_stmt (node as ast.TypeStmt)}
+		.extern_stmt { return checker.extern_stmt (node as ast.ExternStmt)}
 		.var_declaration { return checker.var_declaration(node as ast.VarDeclarationStmt) }
 		.fn_declaration  { return checker.function_declaration( node as ast.FnDeclaration) }
 		.return_stmt 	 { return checker.return_stmt (node as ast.ReturnStmt) }
@@ -45,7 +47,6 @@ pub fn (mut checker TypeChecker) check (node Stmt) Type {
 		// .object_property {}
 		// .object_literal {}
 		// .member_expr {}
-		.type_stmt { return checker.type_stmt (node as ast.TypeStmt)}
 		.number_expr,
 		.string_expr,
 		.ident_expr { return checker.literal (node as Expr) }
