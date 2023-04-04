@@ -22,3 +22,8 @@ bin/
 # vweb and database
 *.db
 *.js
+
+
+# Added by cargo
+
+/target
