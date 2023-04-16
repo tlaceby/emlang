@@ -1,11 +1,19 @@
+#include "frontend/parser/parser.h"
+#include <fstream>
+#include <string>
 
-#include <iostream>
-#include <unistd.h>
+int main() {
+  std::ifstream ifs("./test.em");
+  std::string content = "(program ";
 
-//
+  content += std::string((std::istreambuf_iterator<char>(ifs)),
+                         (std::istreambuf_iterator<char>()));
 
-int main(int argc, char **argv) {
-  printf("\n");
+  content += "\n)"; // add closing program
 
+  SExpParser parser(content);
+  auto ast = parser.parse();
+
+  pretty_print_ast(ast);
   return 0;
 }
